@@ -1,0 +1,80 @@
+//! Contains models for visitors.
+
+use std::collections::HashMap;
+
+use serde::{Deserialize, Serialize};
+
+/// Contains visitor information.
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Visitor {
+    /// The first visit date from this visitor's IP address.
+    pub first_visit_date: String,
+    /// The IP address associated with this visitor's machine.
+    pub ip_address: String,
+    /// The IP data associated with this visitor's IP address.
+    pub ip_data: Option<IPData>,
+    /// The last visit date from this visitor's IP address.
+    pub last_visit_date: Option<String>,
+    /// The number of times this visitor has refreshed a request.
+    pub refresh_count: i32,
+    /// The posts that this visitor has loaded.
+    /// The key corresponds with the post's ID, and the value corresponds with the number of
+    /// refreshes this visitor has made for a particular post.
+    pub visited_posts: HashMap<String, i32>,
+    /// The zines that this visitor has loaded.
+    /// The key corresponds with the zine's ID, and the value corresponds with the number of
+    /// refreshes this visitor has made for a particular zine.
+    pub visited_zines: HashMap<String, i32>,
+}
+
+/// This struct holds IP metadata returned from querying [ip-api](https://ip-api.com/) for an IP's
+/// data.
+#[derive(Debug, Deserialize, Serialize)]
+#[allow(non_snake_case)]
+pub struct IPData {
+    /// The Autonomous System number and organization.
+    /// May be empty for IP blocks not being announced in BGP tables.
+    ///
+    /// NOTE: The `r#` escapes `"as"`. This is necessary because `"as"` is a reserved keyword.
+    pub r#as: String,
+    /// The city associated with the IP address.
+    pub city: String,
+    /// The continent associated with the IP address.
+    pub continent: String,
+    /// The country associated with the IP address.
+    pub country: String,
+    /// The country code associated with the IP address.
+    pub countryCode: String,
+    /// The currency associated with the IP address.
+    pub currency: String,
+    /// Whether the IP address is coming from hosting, colocated, or data center.
+    pub hosting: bool,
+    /// The ISP associated with the IP address.
+    pub isp: String,
+    /// The latitude associated with the IP address.
+    pub lat: f64,
+    /// The longitude associated with the IP address.
+    pub lon: f64,
+    /// Whether the IP address is coming from a mobile device.
+    pub mobile: bool,
+    /// The organization associated with the IP address.
+    pub org: String,
+    /// Whether the IP address is using a proxy, VPN, or Tor exit address.
+    pub proxy: bool,
+    /// The IP address itself.
+    pub query: String,
+    /// The region associated with the IP address.
+    pub region: String,
+    /// The region name associated with the IP address.
+    pub regionName: String,
+    /// The reverse DNS associated with the IP address.
+    ///
+    /// NOTE: This may delay a response from `ip-api`.
+    pub reverse: String,
+    /// The status of this query. This value is always `"success"` or `"fail"`.
+    pub status: String,
+    /// The timezone associated with the IP address.
+    pub timezone: String,
+    /// The ZIP associated with the IP address.
+    pub zip: String,
+}

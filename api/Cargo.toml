@@ -1,0 +1,15 @@
+[package]
+authors = ["Joseph Lai"]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.3.1"
+ansi_term = "0.12.1"
+derive_more = "0.99.17"
+dotenv = "0.15.0"
+lazy_static = "1.4.0"
+mongodb = "2.5.0"
+serde = { version = "1.0.163", features = ["derive"] }
+thiserror = "1.0.40"
