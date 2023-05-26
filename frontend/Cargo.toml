@@ -1,0 +1,8 @@
+[package]
+authors = ["Joseph Lai"]
+edition = "2021"
+name = "frontend"
+version = "0.1.0"
+
+[dependencies]
+yew = { version = "0.20.0", features = ["csr"] }

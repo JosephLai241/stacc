@@ -1,0 +1,87 @@
+html,
+body {
+  background-color: #0b0d10;
+  color: #757575;
+  font-family: "Futura Md BT", sans-serif;
+  overflow-x: hidden;
+}
+
+a {
+  color: #b7410e;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+a:hover {
+  color: #cfcfcf;
+  text-decoration: none;
+}
+
+blockquote {
+  border-left: 0.25em solid #dfe2e5;
+  color: #6a737d;
+  font-size: 0.875em;
+  font-style: italic;
+  margin: 0;
+  margin-bottom: 16px;
+  margin-top: 0;
+  padding: 0 1em;
+}
+
+button {
+  background-color: #22272e;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  border-color: #b7410e;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: #b7410e;
+  padding: 20px;
+  transition: all 0.5s;
+}
+button:hover {
+  box-shadow: -3px 3px #b7410e, -6px 6px #8a310a, -9px 9px #5f2107;
+  color: #cfcfcf;
+  transform: translateY(-6px);
+}
+
+footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding: 20px;
+}
+
+img {
+  border-radius: 5px;
+  object-fit: cover;
+  width: 100%;
+}
+
+main {
+  overflow: auto;
+}
+
+p {
+  color: #c4c4c4;
+}
+
+pre code,
+pre code.hljs {
+  font-family: Hack, monospace;
+  display: block;
+}
+
+code,
+code.hljs {
+  font-family: Hack, monospace;
+  display: inline;
+}
+
+code {
+  background-color: #1d2021;
+  border-radius: 3px;
+  color: #cdbd9b;
+  font-size: 85%;
+  margin: 0;
+  padding: 0.2em 0.4em;
+}
