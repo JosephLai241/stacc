@@ -85,3 +85,50 @@ code {
   margin: 0;
   padding: 0.2em 0.4em;
 }
+
+/* Style for the container on the root page. */
+.root-container {
+  margin-left: 6rem !important;
+  margin-right: auto;
+  margin-top: 30px;
+  padding-left: 15px;
+  padding-right: 15px;
+  vertical-align: center;
+  width: 100%;
+}
+
+/* Style for the title displayed on the root page. */
+.root-title {
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+/* Sexy style for the site's title. */
+.title-text {
+  color: #cfcfcf;
+  display: inline-block;
+  text-shadow: -3px 3px 0px #004799, -6px 6px 0px #002d61, -9px 9px 0px #001f42;
+  transition: all 0.5s;
+  will-change: transform;
+}
+
+/* Adding a hover animation of sorts for the site's title art. */
+.title-text:hover {
+  text-shadow: -3px 3px 0px #004799, -6px 6px 0px #002d61, -9px 9px 0px #001f42,
+    -12px 12px 0px #00152e, -15px 15px 0px #000b1a;
+  transform: translateY(-6px);
+}
+
+/* This `@media` query overrides CSS attributes at a breakpoint of 576px, which is*/
+/* Bootstrap's breakpoint for mobile devices. */
+@media screen and (max-width: 576px) {
+  .root-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 3rem !important;
+    margin-right: auto;
+    margin-top: 30px;
+    vertical-align: center;
+    width: 100%;
+  }
+}
