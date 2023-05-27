@@ -16,12 +16,14 @@ fn app() -> Html {
 
     html! {
         <div style="display: flex; flex-direction: column; min-height: 100vh;">
-            <BrowserRouter>
-                <Switch<Route> render={switch} />
-            </BrowserRouter>
-            <footer>
-                <small class="footer-small">{ format!("v{version_number} | est. 2023") }</small>
-            </footer>
+          <BrowserRouter>
+            <Switch<Route> render={switch} />
+          </BrowserRouter>
+          <footer>
+            <small class="footer-small"
+              >{ format!("v{version_number} | est. 2023") }</small
+            >
+          </footer>
         </div>
     }
 }
