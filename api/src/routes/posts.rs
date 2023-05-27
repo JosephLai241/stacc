@@ -66,10 +66,9 @@ pub async fn get_single_post(
 
     match find_result {
         Ok(Some(post)) => Ok(HttpResponse::Ok().json(post)),
-        Ok(None) => Ok(HttpResponse::NotFound().json(Response {
-            message: format!("Post with ID {} not found!", post_id),
-            status_code: 404,
-        })),
+        Ok(None) => Err(StaccResponseError::MongoDBSearchError {
+            error: format!("Post with ID {post_id} not found!"),
+        }),
         Err(error) => Err(StaccResponseError::MongoDBError {
             error: error.to_string(),
         }),
