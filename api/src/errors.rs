@@ -12,6 +12,7 @@ use thiserror::Error;
 
 use crate::models::data::Response;
 
+/// Contains all error variants for errors that may be raised by Actix Web endpoints.
 #[derive(Debug, Display, derive_more::Error)]
 pub enum StaccResponseError {
     /// A generic error variant for MongoDB.
@@ -43,6 +44,8 @@ impl ResponseError for StaccResponseError {
     }
 }
 
+/// Contains all error variants for errors that may be raised by functions that do not return an
+/// `HttpResponse` (functions that are not Actix Web endpoints).
 #[derive(Debug, Error)]
 pub enum StaccError {
     /// Something fucked up while retrieving an environment variable.
