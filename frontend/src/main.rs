@@ -1,25 +1,53 @@
-use yew::prelude::*;
+//! `stacc` -- A Rust web frontend.
 
-#[function_component]
-fn App() -> Html {
-    //let counter = use_state(|| 0);
-    //let onclick = {
-    //let counter = counter.clone();
-    //move |_| {
-    //let value = *counter + 1;
-    //counter.set(value);
-    //}
-    //};
+use yew::prelude::*;
+use yew_router::prelude::*;
+
+use pages::root::Root;
+use router::Route;
+
+mod pages;
+mod router;
+
+/// The main application entry point.
+#[function_component(Main)]
+fn app() -> Html {
+    let version_number = env!("CARGO_PKG_VERSION");
 
     html! {
-        <div>
-            //<button {onclick}>{ "+1" }</button>
-            //<p>{ *counter }</p>
-            <p>{ "HELLO WORLD" }</p>
+        <div style="display: flex; flex-direction: column; min-height: 100vh;">
+            <BrowserRouter>
+                <Switch<Route> render={switch} />
+            </BrowserRouter>
+            <footer>
+                <small class="footer-small">{ format!("v{version_number} | est. 2023") }</small>
+            </footer>
         </div>
     }
 }
 
+/// Contains the router switch -- maps routes to the functional components for each page.
+fn switch(route: Route) -> Html {
+    match route {
+        Route::About => {
+            unimplemented!()
+        }
+        Route::Blog => {
+            unimplemented!()
+        }
+        Route::NotFound => {
+            unimplemented!()
+        }
+        Route::PostView { post_id } => {
+            unimplemented!()
+        }
+        Route::Root => html! {
+            <Root />
+        },
+    }
+}
+
+/// Run the frontend via `yew`.
 fn main() {
-    yew::Renderer::<App>::new().render();
+    yew::Renderer::<Main>::new().render();
 }
