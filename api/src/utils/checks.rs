@@ -1,6 +1,9 @@
 //! Contains a function that checks whether all required environment variables are set.
 
-use std::env;
+use std::{
+    collections::HashSet,
+    env::{self, VarError},
+};
 
 use ansi_term::Color;
 use lazy_static::lazy_static;
@@ -26,19 +29,28 @@ pub fn run_environment_checks() -> Result<(), StaccError> {
         "{}",
         Color::Yellow
             .bold()
-            .paint("❗️ RUNNING ENVIRONMENT VARIABLES CHECK")
+            .paint("❗️ RUNNING ENVIRONMENT VARIABLES CHECK...")
     );
 
-    for variable in ENVIRONMENT_VARIABLES.iter() {
-        print!("🧐 Checking for \"{variable}\"... ");
+    let loaded_variables: HashSet<String> = env::vars().map(|(key, _value)| key).collect();
+    let required_variables: HashSet<String> = ENVIRONMENT_VARIABLES
+        .iter()
+        .map(|variable| variable.to_string())
+        .collect();
 
-        if let Err(error) = env::var(variable) {
-            println!("{}", Color::Red.bold().paint("⭕️‼️"));
+    if !required_variables.is_subset(&loaded_variables) {
+        let missing_keys: Vec<String> = required_variables
+            .difference(&loaded_variables)
+            .cloned()
+            .collect();
 
-            return Err(StaccError::EnvironmentError(error));
-        }
+        println!(
+            "{} Missing the following keys: {:#?}",
+            Color::Red.bold().paint("⭕️‼️"),
+            missing_keys
+        );
 
-        println!("{}", Color::Green.bold().paint("OK"));
+        return Err(StaccError::EnvironmentError(VarError::NotPresent));
     }
 
     println!(
