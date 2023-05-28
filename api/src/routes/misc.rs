@@ -1,11 +1,20 @@
 //! Contains miscellaneous routes for the API.
 
-use actix_web::{get, web::Data, HttpResponse};
+use actix_web::{
+    cookie::{Cookie, SameSite},
+    get,
+    web::Data,
+    HttpResponse,
+};
 use lazy_static::lazy_static;
 use mongodb::{bson::doc, options::FindOneOptions};
 use rand::Rng;
 
-use crate::{errors::StaccResponseError, models::data::BackgroundGIF, utils::mongo::Mongo};
+use crate::{
+    errors::StaccResponseError,
+    models::data::BackgroundGIF,
+    utils::{environment::EnvironmentVariables, mongo::Mongo},
+};
 
 lazy_static! {
     /// The default fallback GIF if selecting a random GIF from MongoDB fails.
@@ -44,5 +53,16 @@ pub async fn get_background_gif(mongo: Data<Mongo>) -> Result<HttpResponse, Stac
             |gif| gif,
         );
 
-    Ok(HttpResponse::Ok().json(background_gif))
+    let cookie = Cookie::build("background", background_gif.link.clone())
+        .domain(
+            EnvironmentVariables::StaccDomain
+                .env_var()
+                .expect("FAILED TO SET THE DOMAIN FOR THE BACKGROUND COOKIE"),
+        )
+        .expires(None)
+        .path("/")
+        .same_site(SameSite::Strict)
+        .finish();
+
+    Ok(HttpResponse::Ok().cookie(cookie).json(background_gif))
 }

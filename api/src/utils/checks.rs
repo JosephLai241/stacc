@@ -18,6 +18,7 @@ lazy_static! {
         "MONGO_USER",
         "STACC_BACKGROUNDS_COLLECTION_NAME",
         "STACC_DATABASE",
+        "STACC_DOMAIN",
         "STACC_POSTS_COLLECTION_NAME",
         "STACC_VISITORS_COLLECTION_NAME",
     ];
