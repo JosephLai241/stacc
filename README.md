@@ -19,6 +19,8 @@
 
 This is my full-stack portfolio site written entirely in Rust to prove the haters wrong -- Rust _is_ production ready.
 
+I thought it would be cool to implement a dynamic background for the site. A new background GIF is loaded each time you refresh the homepage. This list of GIFs will continue to grow over the years as I find more GIFs that embody the right vibes. Enjoy cycling through the GIFs!
+
 # The Stack
 
 This project uses the following stack:
