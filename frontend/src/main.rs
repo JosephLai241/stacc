@@ -8,6 +8,7 @@ use router::Route;
 
 mod pages;
 mod router;
+mod utils;
 
 /// The main application entry point.
 #[function_component(Main)]
