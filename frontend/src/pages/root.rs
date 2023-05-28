@@ -38,14 +38,14 @@ pub fn root() -> Html {
 /// A clock component that renders Chicago time. This timestamp updates every second.
 #[function_component(Clock)]
 fn clock() -> Html {
-    let timestamp = Local::now().format("%Y/%m/%d %H:%M:%S CHICAGO").to_string();
+    let timestamp_format = "%Y/%m/%d %H:%M:%S CHICAGO".to_string();
+    let timestamp = Local::now().format(&timestamp_format).to_string();
 
     wasm_bindgen_futures::spawn_local(async move {
         IntervalStream::new(1_000)
             .for_each(|_| {
                 if let Some(clock_element) = gloo_utils::document().get_element_by_id("clock") {
-                    let new_timestamp =
-                        Local::now().format("%Y/%m/%d %H:%M:%S CHICAGO").to_string();
+                    let new_timestamp = Local::now().format(&timestamp_format).to_string();
 
                     clock_element.set_inner_html(&new_timestamp);
                 }
