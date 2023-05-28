@@ -97,6 +97,18 @@ code {
   animation: fadeInSlideDown 1s;
 }
 
+/* Setting the opacity for the fade/slide in transition. */
+@keyframes fadeInSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Override the <small> tag's styling for the footer. */
 .footer-small {
   color: #5e5e5e;
