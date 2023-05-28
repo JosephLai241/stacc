@@ -2,9 +2,14 @@
 
 use yew::prelude::*;
 
+use crate::utils::background;
+
 /// The root component.
 #[function_component(Root)]
 pub fn root() -> Html {
+    background::set_background(true);
+    gloo_utils::document().set_title("josephlai");
+
     html! {
         <div class="root-container fade-in-slide-down">
           <b>
