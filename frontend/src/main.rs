@@ -23,7 +23,14 @@ fn app() -> Html {
           </BrowserRouter>
           <footer>
             <small class="footer-small"
-              >{ format!("v{version_number} | est. 2023") }</small
+              >
+                { format!("v{version_number} | est. 2023 |") }
+                <span class="github-svg-container">
+                  <a href="https://github.com/JosephLai241/stacc">
+                    <img src="../../github.svg" alt="GitHub link"/>
+                  </a>
+                </span>
+              </small
             >
           </footer>
         </div>
