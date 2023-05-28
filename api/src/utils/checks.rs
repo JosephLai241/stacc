@@ -33,7 +33,7 @@ pub fn run_environment_checks() -> Result<(), StaccError> {
         print!("🧐 Checking for \"{variable}\"... ");
 
         if let Err(error) = env::var(variable) {
-            println!("{}", Color::Red.bold().paint("⭕️‼️ "));
+            println!("{}", Color::Red.bold().paint("⭕️‼️"));
 
             return Err(StaccError::EnvironmentError(error));
         }
