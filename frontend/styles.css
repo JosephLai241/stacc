@@ -86,6 +86,11 @@ code {
   padding: 0.2em 0.4em;
 }
 
+/* Style for fading in something and also simulating sliding down. */
+.fade-in-slide-down {
+  animation: fadeInSlideDown 1s;
+}
+
 /* Override the <small> tag's styling for the footer. */
 .footer-small {
   color: #5e5e5e;
