@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 /// Contains visitor information.
@@ -25,6 +26,21 @@ pub struct Visitor {
     /// The key corresponds with the zine's ID, and the value corresponds with the number of
     /// refreshes this visitor has made for a particular zine.
     pub visited_zines: HashMap<String, i32>,
+}
+
+impl Visitor {
+    /// Create a new `Visitor`.
+    pub fn new(ip_address: String) -> Self {
+        Self {
+            first_visit_date: Utc::now().format("%Y-%m-%d %H:%M:%S").to_string(),
+            ip_address,
+            ip_data: None,
+            last_visit_date: None,
+            refresh_count: 0,
+            visited_posts: HashMap::new(),
+            visited_zines: HashMap::new(),
+        }
+    }
 }
 
 /// This struct holds IP metadata returned from querying [ip-api](https://ip-api.com/) for an IP's
