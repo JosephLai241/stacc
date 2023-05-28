@@ -1,13 +1,13 @@
 //! Instantiate a connection to MongoDB.
 
-use std::env;
-
 use mongodb::{Client, Collection};
 
 use crate::{
     errors::StaccError,
     models::{data::BackgroundGIF, post::PostData, visitor::Visitor},
 };
+
+use super::environment::EnvironmentVariables;
 
 #[derive(Clone, Debug)]
 pub struct Mongo {
@@ -24,20 +24,22 @@ impl Mongo {
     pub async fn init() -> Result<Self, StaccError> {
         let mongo_uri = format!(
             "mongodb://{}:{}@{}",
-            env::var("MONGO_USER")?,
-            env::var("MONGO_PASSWORD")?,
-            env::var("MONGO_URI")?
+            EnvironmentVariables::MongoDBUser.env_var()?,
+            EnvironmentVariables::MongoDBPassword.env_var()?,
+            EnvironmentVariables::MongoDBURI.env_var()?,
         );
         let client = Client::with_uri_str(&mongo_uri).await?;
-        let database = client.database(&env::var("STACC_DATABASE")?);
+        let database = client.database(&EnvironmentVariables::StaccDatabase.env_var()?);
 
         Ok(Self {
-            backgrounds_collection: database
-                .collection::<BackgroundGIF>(&env::var("STACC_BACKGROUNDS_COLLECTION_NAME")?),
+            backgrounds_collection: database.collection::<BackgroundGIF>(
+                &EnvironmentVariables::StaccBackgroundsCollectionName.env_var()?,
+            ),
             posts_collection: database
-                .collection::<PostData>(&env::var("STACC_POSTS_COLLECTION_NAME")?),
-            visitor_collection: database
-                .collection::<Visitor>(&env::var("STACC_VISITORS_COLLECTION_NAME")?),
+                .collection::<PostData>(&EnvironmentVariables::StaccPostsCollectionName.env_var()?),
+            visitor_collection: database.collection::<Visitor>(
+                &EnvironmentVariables::StaccVisitorsCollectionName.env_var()?,
+            ),
         })
     }
 }
