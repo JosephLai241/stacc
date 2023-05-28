@@ -6,6 +6,7 @@ use yew_router::prelude::*;
 use pages::root::Root;
 use router::Route;
 
+mod errors;
 mod pages;
 mod router;
 mod utils;
