@@ -29,6 +29,8 @@ pub fn root() -> Html {
             </i>
           </b>
           <Clock />
+          <ShadesOfRust />
+          <div style="margin-bottom: 50px;"></div>
           <h3><a href="/blog">{"blog"}</a></h3>
           <h3><a href="/about">{"about"}</a></h3>
         </div>
@@ -56,5 +58,30 @@ fn clock() -> Html {
 
     html! {
         <p class="clock" id="clock">{ timestamp }</p>
+    }
+}
+
+/// A simple color palette containing various shades of rust.
+#[function_component(ShadesOfRust)]
+fn shades_of_rust() -> Html {
+    html! {
+        <>
+          <a href="https://www.rust-lang.org/">
+            <div class="color-box" style="background-color: #b7410e;"></div>
+          </a>
+          <a href="https://www.google.com/search?q=%23B7410E">
+            <div class="color-box" style="background-color: #a53b0d;"></div>
+          </a>
+          <a href="https://i.imgur.com/thdjm7y.jpg">
+            <div class="color-box" style="background-color: #92340b;"></div>
+          </a>
+          <a href="https://i.imgur.com/mzCEmev.jpg">
+            <div class="color-box" style="background-color: #802e0a;"></div>
+          </a>
+            <div class="color-box" style="background-color: #6e2708;"></div>
+          <a href="https://videos.danksquad.org/w/cca8b880-87d2-4ce5-815f-7e2c020d5b75">
+            <div class="color-box" style="background-color: #5c2107;"></div>
+          </a>
+        </>
     }
 }
