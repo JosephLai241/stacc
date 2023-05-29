@@ -88,8 +88,17 @@ code {
 
 /* Style for the clock on the root page. */
 .clock {
-  color: #5c5c5c;
-  margin-bottom: 50px;
+  color: #929292;
+  margin-top: 15px;
+}
+
+.color-box {
+  border-color: #1a1a1a17;
+  border-style: solid;
+  border-width: 0.01px;
+  display: inline-block;
+  height: 15px;
+  width: 50px;
 }
 
 /* Style for fading in something and also simulating sliding down. */
