@@ -1,6 +1,6 @@
 //! The API for the `stacc`.
 
-use std::sync::Mutex;
+use std::env;
 
 use actix_web::{
     web::{self, Data},
@@ -9,6 +9,7 @@ use actix_web::{
 use ansi_term::{Color, Style};
 use dotenv::dotenv;
 
+use env_logger::Env;
 use utils::mongo::Mongo;
 
 mod errors;
@@ -30,11 +31,15 @@ async fn main() {
     if let Err(error) = utils::checks::run_environment_checks() {
         println!("{}", Color::Red.bold().paint(error.to_string()));
     } else {
-        let mongo = Data::new(Mutex::new(
+        // Instantiate the API logger.
+        env::set_var("RUST_LOG", "debug");
+        env_logger::init_from_env(Env::new().default_filter_or("debug"));
+
+        let mongo = Data::new(
             Mongo::init()
                 .await
                 .expect("COULD NOT INSTANTIATE A NEW MONGODB CLIENT INSTANCE!"),
-        ));
+        );
 
         HttpServer::new(move || {
             App::new().app_data(mongo.clone()).service(
