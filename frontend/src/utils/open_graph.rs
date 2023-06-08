@@ -49,10 +49,9 @@ impl OpenGraphTag {
 
 /// Set the Open Graph tags for a particular page.
 fn set_open_graph_tag(og_tag: OpenGraphTag) -> Result<(), StaccError> {
-    let new_tag = document().create_element("meta")?;
-
     let (property, content) = og_tag.to_tuple();
 
+    let new_tag = document().create_element("meta")?;
     new_tag.set_attribute("property", &property)?;
     new_tag.set_attribute("content", &content)?;
 
