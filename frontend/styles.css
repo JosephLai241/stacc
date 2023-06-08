@@ -371,19 +371,46 @@ code {
 
 /* Sexy style for the site's title. */
 .title-text {
-  color: #cfcfcf;
+  animation: to-white-text 1.5s linear forwards, textShadow 1.6s infinite;
+  color: #b0b0b0;
   display: inline-block;
   padding-left: 10px;
-  text-shadow: -3px 3px 0px #004799, -6px 6px 0px #002d61, -9px 9px 0px #001f42;
   transition: all 0.5s;
   will-change: transform;
 }
 
 /* Adding a hover animation of sorts for the site's title art. */
 .title-text:hover {
-  text-shadow: -3px 3px 0px #004799, -6px 6px 0px #002d61, -9px 9px 0px #001f42,
-    -12px 12px 0px #00152e, -15px 15px 0px #000b1a;
-  transform: translateY(-6px);
+  animation: to-black-text 1.5s linear forwards, textShadow 2s infinite;
+  text-shadow: -1px 1px 0px #000000, -2px 2px 0px #000000, -3px 3px 0px #000000,
+    -4px 4px 0px #000000, -5px 5px 0px #000000, -6px 6px 0px #000000,
+    -7px 7px 0px #000000, -8px 8px 0px #000000, -9px 9px 0px #000000;
+}
+
+/* The transition from white to blue to black text. */
+@keyframes to-black-text {
+  0% {
+    color: #b0b0b0;
+  }
+  50% {
+    color: #002d61;
+  }
+  100% {
+    color: #000000;
+  }
+}
+
+/* The transition from black to blue to white text. */
+@keyframes to-white-text {
+  0% {
+    color: #000000;
+  }
+  50% {
+    color: #002d61;
+  }
+  100% {
+    color: #b0b0b0;
+  }
 }
 
 /* This `@media` query overrides CSS attributes at a breakpoint of 576px, which is*/
