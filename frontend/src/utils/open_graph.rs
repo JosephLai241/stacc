@@ -31,7 +31,7 @@ impl OpenGraphTag {
     /// Convert the enum variant to a tuple containing the tag's property and content attributes.
     pub fn to_tuple(self) -> (String, String) {
         match self {
-            OpenGraphTag::Description(text) => ("og:description".to_string(), text),
+            OpenGraphTag::Description(description) => ("og:description".to_string(), description),
             OpenGraphTag::ImageLink(link) => ("og:image".to_string(), link),
             OpenGraphTag::PageType(page_type) => {
                 let content = match page_type {
@@ -41,8 +41,8 @@ impl OpenGraphTag {
 
                 ("og:type".to_string(), content)
             }
-            OpenGraphTag::Title(text) => ("og:title".to_string(), text),
-            OpenGraphTag::Url(text) => ("og:url".to_string(), text),
+            OpenGraphTag::Title(title) => ("og:title".to_string(), title),
+            OpenGraphTag::Url(url) => ("og:url".to_string(), url),
         }
     }
 }
