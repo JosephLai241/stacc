@@ -329,6 +329,25 @@ code {
   width: 1em;
 }
 
+/* Contains the row of social media images on the about page. */
+.image-container {
+  align-items: center;
+  display: flex;
+  margin-top: 60px;
+}
+
+.image-container img {
+  height: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 50px;
+}
+
+/* A half-screen (left-oriented) container. */
+.left-half-container {
+  width: 50%;
+}
+
 /* Style for the container on the root page. */
 .root-container {
   margin-left: 6rem !important;
@@ -365,6 +384,10 @@ code {
 /* This `@media` query overrides CSS attributes at a breakpoint of 576px, which is*/
 /* Bootstrap's breakpoint for mobile devices. */
 @media screen and (max-width: 576px) {
+  .left-half-container {
+    width: 100%;
+  }
+
   .root-container {
     display: flex;
     flex-direction: column;
