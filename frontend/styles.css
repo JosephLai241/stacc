@@ -209,7 +209,7 @@ code {
   }
 }
 
-/* Vaporwave-esque text shadow effect. Courtesy of Alec Lownes */
+/* Vaporwave-esque text shadow effect. Courtesy of Alec Lownes. */
 @keyframes textShadow {
   0% {
     text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5),
