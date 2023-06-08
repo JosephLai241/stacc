@@ -6,6 +6,7 @@ use crate::errors::StaccError;
 
 /// Contains all page types that may be set in the Open Graph `og:type` tag for this particular
 /// site.
+#[derive(Debug)]
 pub enum PageType {
     /// The current page contains an article.
     Article,
@@ -14,6 +15,7 @@ pub enum PageType {
 }
 
 /// Contains all Open Graph tags to set on the page.
+#[derive(Debug)]
 pub enum OpenGraphTag {
     /// Set the Open Graph description tag.
     Description(String),
@@ -48,7 +50,7 @@ impl OpenGraphTag {
 }
 
 /// Set an Open Graph tag for a particular page.
-fn set_open_graph_tag(og_tag: OpenGraphTag) -> Result<(), StaccError> {
+pub fn set_open_graph_tag(og_tag: OpenGraphTag) -> Result<(), StaccError> {
     let (property, content) = og_tag.to_tuple();
 
     let new_tag = document().create_element("meta")?;
