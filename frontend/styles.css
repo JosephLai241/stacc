@@ -364,6 +364,11 @@ code {
   margin-top: 50px;
 }
 
+/* The styling for the social media icons. */
+.social-icon:hover {
+  transform: translateY(-6px);
+}
+
 /* Sexy style for the site's title. */
 .title-text {
   color: #cfcfcf;
