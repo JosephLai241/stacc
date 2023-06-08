@@ -1,7 +1,7 @@
 html,
 body {
   background-color: #0b0d10;
-  color: #757575;
+  color: #b0b0b0;
   font-family: "Futura Md BT", sans-serif;
   overflow-x: hidden;
 }
@@ -12,7 +12,7 @@ a {
   transition: all 0.2s;
 }
 a:hover {
-  color: #cfcfcf;
+  color: #b0b0b0;
   text-decoration: none;
 }
 
@@ -40,7 +40,7 @@ button {
 }
 button:hover {
   box-shadow: -3px 3px #b7410e, -6px 6px #8a310a, -9px 9px #5f2107;
-  color: #cfcfcf;
+  color: #b0b0b0;
   transform: translateY(-6px);
 }
 
@@ -62,7 +62,7 @@ main {
 }
 
 p {
-  color: #c4c4c4;
+  color: #b0b0b0;
 }
 
 pre code,
