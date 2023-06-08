@@ -98,6 +98,7 @@ code {
   border-width: 0.01px;
   display: inline-block;
   height: 15px;
+  transition: all 0.25s linear;
   width: 50px;
   will-change: transform;
 }
