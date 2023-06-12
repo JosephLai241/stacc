@@ -14,6 +14,8 @@ pub fn about() -> Html {
     background::set_background(false);
     gloo_utils::document().set_title("jl | about");
 
+    open_graph::set_open_graph_tag(OpenGraphTag::Description("about me".to_string()))
+        .unwrap_or_else(|error| error!(error.to_string()));
     open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(FAVICON_GIF.to_string()))
         .unwrap_or_else(|error| error!(error.to_string()));
     open_graph::set_open_graph_tag(OpenGraphTag::PageType(PageType::Website))
