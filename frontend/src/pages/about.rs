@@ -55,9 +55,5 @@ and a place to blog about all things computer science."#;
         </div>
     };
 
-    html! {
-        {
-            utils::create_page_with_nav(None, page_body)
-        }
-    }
+    utils::create_page_with_nav(None, page_body)
 }
