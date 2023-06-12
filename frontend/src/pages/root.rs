@@ -1,6 +1,7 @@
 //! The root page (landing page) of this site.
 
-use chrono::Local;
+use chrono::{TimeZone, Utc};
+use chrono_tz::America::Chicago;
 use futures_util::{future::ready, StreamExt};
 use gloo_console::error;
 use gloo_timers::future::IntervalStream;
@@ -61,16 +62,26 @@ pub fn root() -> Html {
 #[function_component(Clock)]
 fn clock() -> Html {
     let timestamp_format = "%Y/%m/%d %H:%M:%S CHICAGO".to_string();
-    let timestamp = Local::now().format(&timestamp_format).to_string();
+
+    let current_utc = Utc::now().naive_utc().timestamp_nanos();
+    let timestamp = Chicago
+        .timestamp_nanos(current_utc)
+        .format(&timestamp_format)
+        .to_string();
 
     wasm_bindgen_futures::spawn_local(async move {
         IntervalStream::new(1_000)
             .for_each(|_| {
                 if let Some(clock_element) = gloo_utils::document().get_element_by_id("clock") {
-                    let new_timestamp = Local::now().format(&timestamp_format).to_string();
+                    let current_utc = Utc::now().naive_utc().timestamp_nanos();
+                    let new_timestamp = Chicago
+                        .timestamp_nanos(current_utc)
+                        .format(&timestamp_format)
+                        .to_string();
 
                     clock_element.set_inner_html(&new_timestamp);
                 }
+
                 ready(())
             })
             .await
