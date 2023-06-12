@@ -2,3 +2,4 @@
 
 pub mod blog;
 pub mod response;
+pub mod story;
