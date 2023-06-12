@@ -2,16 +2,36 @@
 
 use chrono::Local;
 use futures_util::{future::ready, StreamExt};
+use gloo_console::error;
 use gloo_timers::future::IntervalStream;
 use yew::prelude::*;
 
-use crate::utils::background;
+use crate::{
+    utils::{
+        background,
+        open_graph::{self, OpenGraphTag, PageType},
+    },
+    FAVICON_GIF,
+};
 
 /// The root component.
 #[function_component(Root)]
 pub fn root() -> Html {
     background::set_background(true);
-    gloo_utils::document().set_title("josephlai");
+    gloo_utils::document().set_title("jl");
+
+    open_graph::set_open_graph_tag(OpenGraphTag::Description(
+        "a form of artistic expression and a place to blog about CS".to_string(),
+    ))
+    .unwrap_or_else(|error| error!(error.to_string()));
+    open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(FAVICON_GIF.to_string()))
+        .unwrap_or_else(|error| error!(error.to_string()));
+    open_graph::set_open_graph_tag(OpenGraphTag::PageType(PageType::Website))
+        .unwrap_or_else(|error| error!(error.to_string()));
+    open_graph::set_open_graph_tag(OpenGraphTag::Title("jl".to_string()))
+        .unwrap_or_else(|error| error!(error.to_string()));
+    open_graph::set_open_graph_tag(OpenGraphTag::Url("https://josephlai.dev".to_string()))
+        .unwrap_or_else(|error| error!(error.to_string()));
 
     html! {
         <div class="root-container fade-in-slide-down">
@@ -21,7 +41,7 @@ pub fn root() -> Html {
                 <a
                   class="root-title title-text"
                   href="/"
-                  style="text-decoration: none; color: #cfcfcf"
+                  style="text-decoration: none; color: #b0b0b0;"
                 >
                   { "JL" }
                 </a>
@@ -57,7 +77,7 @@ fn clock() -> Html {
     });
 
     html! {
-        <p class="clock" id="clock">{ timestamp }</p>
+        <p class="clock pulse" id="clock">{ timestamp }</p>
     }
 }
 
