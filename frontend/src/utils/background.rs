@@ -42,7 +42,6 @@ fn get_new_background() {
     }
 
     wasm_bindgen_futures::spawn_local(async move {
-        // TODO: REMOVE THE LOCALHOST URL LATER.
         if let Err(error) = Request::get("/api/background").send().await {
             error!("FAILED TO GET A NEW BACKGROUND GIF FROM THE API! DEFAULTING.");
             error!(error.to_string());
