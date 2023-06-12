@@ -129,16 +129,14 @@ pub fn blog() -> Html {
         },
     };
 
-    html! {
-        utils::create_page_with_nav(
-            None,
-            if *is_loading {
-                html! { <Loading /> }
-            } else {
-                html! { blog_body }
-            }
-        )
-    }
+    utils::create_page_with_nav(
+        None,
+        if *is_loading {
+            html! { <Loading /> }
+        } else {
+            html! { blog_body }
+        },
+    )
 }
 
 /// Create a Bootstrap Card for each `PostData` struct.

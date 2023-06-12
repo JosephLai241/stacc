@@ -123,8 +123,9 @@ pub fn not_found() -> Html {
         },
     );
 
-    html! {
-        utils::create_page_with_nav(None, html! {
+    utils::create_page_with_nav(
+        None,
+        html! {
             <div class="left-half-container">
             {
                 if *is_loading {
@@ -138,6 +139,6 @@ pub fn not_found() -> Html {
                 }
             }
             </div>
-        })
-    }
+        },
+    )
 }

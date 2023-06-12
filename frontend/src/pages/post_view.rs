@@ -219,23 +219,22 @@ pub fn post_view(props: &PostViewProps) -> Html {
         }
     };
 
-    html! {
-        utils::create_page_with_nav(Some("/blog".to_string()),
-            html! {
-                <div class="blog-post fade-in-slide-down">
-                {
-                    if *is_loading {
-                        html! {
-                            <div class="d-flex flex-column centered-loading">
-                              <Loading />
-                            </div>
-                        }
-                    } else {
-                        html! { post_body }
+    utils::create_page_with_nav(
+        Some("/blog".to_string()),
+        html! {
+            <div class="blog-post fade-in-slide-down">
+            {
+                if *is_loading {
+                    html! {
+                        <div class="d-flex flex-column centered-loading">
+                          <Loading />
+                        </div>
                     }
+                } else {
+                    html! { post_body }
                 }
-                </div>
-            },
-        )
-    }
+            }
+            </div>
+        },
+    )
 }
