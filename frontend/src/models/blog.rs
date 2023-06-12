@@ -26,6 +26,25 @@ pub struct PostData {
     pub preview_summary: String,
     /// The title of the post.
     pub title: String,
+    /// The topic of the post.
+    pub topic: String,
     /// The view count.
     pub view_count: i32,
+}
+
+impl PostData {
+    /// Create a new `PostData` given the post's `post_id`.
+    pub fn from_post_id(post_id: String) -> Self {
+        Self {
+            body: "".to_string(),
+            created: "".to_string(),
+            edited: None,
+            post_id,
+            preview_image_link: "".to_string(),
+            preview_summary: "".to_string(),
+            title: "".to_string(),
+            topic: "".to_string(),
+            view_count: 0,
+        }
+    }
 }
