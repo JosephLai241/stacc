@@ -86,6 +86,123 @@ code {
   padding: 0.2em 0.4em;
 }
 
+/* Creating an animation for the 404 not found page. */
+.animated-loading {
+  animation: shadows 1.2s ease-in infinite, move 1.2s ease-in infinite;
+  color: #b0b0b0;
+  display: inline-block;
+  font-family: "Futura Md BT", sans-serif;
+  font-size: calc(2rem + 5vw);
+  margin: 0;
+  text-align: center;
+  text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42,
+    -12px 12px 0 #00152e;
+}
+@keyframes shadows {
+  0% {
+    text-shadow: none;
+  }
+
+  10% {
+    text-shadow: -3px 3px 0 #004799;
+  }
+
+  20% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61;
+  }
+
+  30% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42;
+  }
+
+  40% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42,
+      -12px 12px 0 #00152e;
+  }
+
+  50% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42,
+      -12px 12px 0 #00152e;
+  }
+
+  60% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42,
+      -12px 12px 0 #00152e;
+  }
+
+  70% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61, -9px 9px #001f42;
+  }
+
+  80% {
+    text-shadow: -3px 3px 0 #004799, -6px 6px 0 #002d61;
+  }
+
+  90% {
+    text-shadow: -3px 3px 0 #004799;
+  }
+
+  100% {
+    text-shadow: none;
+  }
+}
+@keyframes move {
+  0% {
+    transform: translate(0px, 0px);
+  }
+
+  40% {
+    transform: translate(12px, -12px);
+  }
+
+  50% {
+    transform: translate(12px, -12px);
+  }
+
+  60% {
+    transform: translate(12px, -12px);
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* Style for the blog post view. */
+.blog-post {
+  background-color: #1c2128;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  border-color: #b7410e;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: thin;
+  margin-left: 200px;
+  margin-right: 200px;
+  padding: 20px;
+}
+
+/* Style for the topic badge in the blog post. */
+.blog-post-topic-badge {
+  background-color: #b7410e;
+  color: #b0b0b0;
+  margin-right: 4px;
+}
+
+/* Style for the blog post's preview summary. */
+.blog-post-preview-summary {
+  color: #929292;
+  font-style: italic;
+  margin-bottom: 1rem !important;
+  margin-top: 1rem !important;
+}
+
+/* Style for the centered loading component. */
+.centered-loading {
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10%;
+}
+
 /* Style for the clock on the root page. */
 .clock {
   color: #929292;
@@ -297,6 +414,11 @@ code {
   }
 }
 
+/* Style for the error text. */
+.error-text {
+  animation: textShadow 1.6s infinite;
+}
+
 /* Style for fading in something and also simulating sliding down. */
 .fade-in-slide-down {
   animation: fadeInSlideDown 1s;
@@ -364,6 +486,36 @@ code {
   margin-top: 50px;
 }
 
+/* Style for the Bootstrap Card displaying each blog post preview. */
+.rusty-card {
+  background-color: #22272e;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  border-color: #b7410e;
+  color: #b0b0b0;
+  transition: all 0.5s;
+}
+.rusty-card:hover {
+  box-shadow: -3px 3px #b7410e, -6px 6px #8a310a, -9px 9px #5f2107;
+  transform: translateY(-6px);
+}
+
+/* Style for the footer in the rusty card. */
+.rusty-card-footer {
+  color: #3b434d;
+}
+
+/* Style for the line divider in the rusty card. */
+.rusty-card-line {
+  border-top: 1px solid #b7410e;
+  margin-bottom: 1rem !important;
+}
+
+/* Style for the extra T H I C C line divider in the rusty card. */
+.rusty-line-thicc {
+  border-top: 10px solid #b7410e;
+  margin-bottom: 1rem !important;
+}
+
 /* The styling for the social media icons. */
 .social-icon:hover {
   transform: translateY(-6px);
@@ -381,7 +533,7 @@ code {
 
 /* Adding a hover animation of sorts for the site's title art. */
 .title-text:hover {
-  animation: to-black-text 1.5s linear forwards, textShadow 2s infinite;
+  animation: to-black-text 0.5s linear forwards, textShadow 2s infinite;
   text-shadow: -1px 1px 0px #000000, -2px 2px 0px #000000, -3px 3px 0px #000000,
     -4px 4px 0px #000000, -5px 5px 0px #000000, -6px 6px 0px #000000,
     -7px 7px 0px #000000, -8px 8px 0px #000000, -9px 9px 0px #000000;
@@ -416,6 +568,11 @@ code {
 /* This `@media` query overrides CSS attributes at a breakpoint of 576px, which is*/
 /* Bootstrap's breakpoint for mobile devices. */
 @media screen and (max-width: 576px) {
+  .blog-post {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .left-half-container {
     width: 100%;
   }
