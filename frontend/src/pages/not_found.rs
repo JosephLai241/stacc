@@ -5,7 +5,7 @@ use gloo_net::http::Request;
 use yew::prelude::*;
 
 use crate::{
-    models::{response::Response, story::Story},
+    models::story::Story,
     pages::utils::{self, Loading},
     utils::{
         background,
@@ -44,40 +44,22 @@ pub fn not_found() -> Html {
 
                     match Request::get("/api/story").send().await {
                         Ok(response) => match response.status() {
-                            200 => match response.json::<Story>().await {
-                                Ok(story) => {
-                                    is_loading.set(false);
-                                    get_story_response.set(Some(Ok(story)));
-                                }
-                                Err(error) => {
-                                    is_loading.set(false);
-                                    get_story_response.set(Some(Err(
-                                        Response::status_500_with_message(format!(
-                                            "UNABLE TO PARSE STORY TO JSON: {error}"
-                                        )),
-                                    )))
-                                }
-                            },
-                            _ => match response.json::<Response>().await {
-                                Ok(response) => {
-                                    is_loading.set(false);
-                                    get_story_response.set(Some(Err(response)))
-                                }
-                                Err(error) => {
-                                    is_loading.set(false);
-                                    get_story_response.set(Some(Err(
-                                        Response::status_500_with_message(format!(
-                                            "UNABLE TO PARSE THE API RESPONSE TO JSON: {error}"
-                                        )),
-                                    )))
-                                }
-                            },
+                            200 => {
+                                is_loading.set(false);
+                                get_story_response.set(response.json::<Story>().await.ok());
+                            }
+                            _ => {
+                                error!(format!("{:?}", response));
+
+                                is_loading.set(false);
+                                get_story_response.set(None);
+                            }
                         },
                         Err(error) => {
+                            error!(format!("{:?}", error));
+
                             is_loading.set(false);
-                            get_story_response.set(Some(Err(Response::status_500_with_message(
-                                format!("UNABLE TO GET A STORY FROM THE API: {error}"),
-                            ))))
+                            get_story_response.set(None);
                         }
                     }
                 });
@@ -88,12 +70,7 @@ pub fn not_found() -> Html {
         )
     }
 
-    let response = get_story_response
-        .as_ref()
-        .unwrap_or(&Ok(Story::default()))
-        .to_owned();
-
-    let story = response.map_or(
+    let story = get_story_response.as_ref().map_or(
         html! {
             <div class="container fade-in-slide-down">
               <p>
