@@ -19,6 +19,8 @@ pub struct PostData {
     pub preview_summary: String,
     /// The title of the post.
     pub title: String,
+    /// The topic of the post.
+    pub topic: String,
     /// The number of views.
     pub view_count: i32,
 }
