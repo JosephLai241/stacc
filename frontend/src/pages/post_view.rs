@@ -85,12 +85,11 @@ pub fn post_view(props: &PostViewProps) -> Html {
                                     ))
                                     .unwrap_or_else(|error| error!(error.to_string()));
 
-                                    get_post_response.set(Some(Err(Response {
-                                        message: format!(
+                                    get_post_response.set(Some(Err(
+                                        Response::status_500_with_message(format!(
                                             "UNABLE TO PARSE THE POST DATA TO JSON: {error}"
-                                        ),
-                                        status_code: 500,
-                                    })))
+                                        )),
+                                    )))
                                 }
                             },
                             _ => match response.json::<Response>().await {
@@ -128,22 +127,20 @@ pub fn post_view(props: &PostViewProps) -> Html {
                                     ))
                                     .unwrap_or_else(|error| error!(error.to_string()));
 
-                                    get_post_response.set(Some(Err(Response {
-                                        message: format!(
+                                    get_post_response.set(Some(Err(
+                                        Response::status_500_with_message(format!(
                                             "UNABLE TO PARSE THE API RESPONSE TO JSON: {error}"
-                                        ),
-                                        status_code: 500,
-                                    })))
+                                        )),
+                                    )))
                                 }
                             },
                         },
                         Err(error) => {
                             is_loading.set(false);
 
-                            get_post_response.set(Some(Err(Response {
-                                message: format!("UNABLE TO GET THE POST FROM THE API: {error}"),
-                                status_code: 500,
-                            })))
+                            get_post_response.set(Some(Err(Response::status_500_with_message(
+                                format!("UNABLE TO GET THE POST FROM THE API: {error}"),
+                            ))))
                         }
                     }
                 });

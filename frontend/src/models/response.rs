@@ -19,3 +19,13 @@ impl Default for Response {
         }
     }
 }
+
+impl Response {
+    /// Create a new `Response` with a given message and an HTTP 500 status code.
+    pub fn status_500_with_message(message: String) -> Self {
+        Self {
+            message,
+            status_code: 500,
+        }
+    }
+}

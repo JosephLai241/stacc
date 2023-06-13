@@ -51,13 +51,11 @@ pub fn not_found() -> Html {
                                 }
                                 Err(error) => {
                                     is_loading.set(false);
-                                    get_story_response.set(Some(Err(Response {
-                                        message: format!(
-                                            "UNABLE TO PARSE STORY TO JSON: {}",
-                                            error.to_string()
-                                        ),
-                                        status_code: 500,
-                                    })))
+                                    get_story_response.set(Some(Err(
+                                        Response::status_500_with_message(format!(
+                                            "UNABLE TO PARSE STORY TO JSON: {error}"
+                                        )),
+                                    )))
                                 }
                             },
                             _ => match response.json::<Response>().await {
@@ -67,24 +65,19 @@ pub fn not_found() -> Html {
                                 }
                                 Err(error) => {
                                     is_loading.set(false);
-                                    get_story_response.set(Some(Err(Response {
-                                        message: format!(
+                                    get_story_response.set(Some(Err(
+                                        Response::status_500_with_message(format!(
                                             "UNABLE TO PARSE THE API RESPONSE TO JSON: {error}"
-                                        ),
-                                        status_code: 500,
-                                    })))
+                                        )),
+                                    )))
                                 }
                             },
                         },
                         Err(error) => {
                             is_loading.set(false);
-                            get_story_response.set(Some(Err(Response {
-                                message: format!(
-                                    "UNABLE TO GET A STORY FROM THE API: {}",
-                                    error.to_string()
-                                ),
-                                status_code: 500,
-                            })));
+                            get_story_response.set(Some(Err(Response::status_500_with_message(
+                                format!("UNABLE TO GET A STORY FROM THE API: {error}"),
+                            ))))
                         }
                     }
                 });

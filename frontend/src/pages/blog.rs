@@ -57,24 +57,18 @@ pub fn blog() -> Html {
                             }
                             Err(error) => {
                                 is_loading.set(false);
-                                get_posts_response.set(Some(Err(Response {
-                                    message: format!(
-                                        "UNABLE TO PARSE THE POSTS TO JSON: {}",
-                                        error
-                                    ),
-                                    status_code: 500,
-                                })));
+                                get_posts_response.set(Some(Err(
+                                    Response::status_500_with_message(format!(
+                                        "UNABLE TO PARSE THE POSTS TO JSON: {error}"
+                                    )),
+                                )))
                             }
                         },
                         Err(error) => {
                             is_loading.set(false);
-                            get_posts_response.set(Some(Err(Response {
-                                message: format!(
-                                    "UNABLE TO GET BLOG POSTS FROM THE API: {}",
-                                    error
-                                ),
-                                status_code: 500,
-                            })))
+                            get_posts_response.set(Some(Err(Response::status_500_with_message(
+                                format!("UNABLE TO GET POSTS FROM THE API: {error}"),
+                            ))))
                         }
                     }
                 });
