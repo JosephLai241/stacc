@@ -20,6 +20,7 @@ lazy_static! {
         "STACC_DATABASE",
         "STACC_DOMAIN",
         "STACC_POSTS_COLLECTION_NAME",
+        "STACC_STORIES_COLLECTION_NAME",
         "STACC_VISITORS_COLLECTION_NAME",
     ];
 }

@@ -20,6 +20,8 @@ pub enum EnvironmentVariables {
     StaccDomain,
     /// The name of the collection that contains all posts.
     StaccPostsCollectionName,
+    /// The name of the collection that contains all stories.
+    StaccStoriesCollectionName,
     /// The name of the collection that contains all visitors.
     StaccVisitorsCollectionName,
 }
@@ -37,6 +39,7 @@ impl EnvironmentVariables {
             Self::StaccDatabase => Ok(env::var("STACC_DATABASE")?),
             Self::StaccDomain => Ok(env::var("STACC_DOMAIN")?),
             Self::StaccPostsCollectionName => Ok(env::var("STACC_POSTS_COLLECTION_NAME")?),
+            Self::StaccStoriesCollectionName => Ok(env::var("STACC_STORIES_COLLECTION_NAME")?),
             Self::StaccVisitorsCollectionName => Ok(env::var("STACC_VISITORS_COLLECTION_NAME")?),
         }
     }

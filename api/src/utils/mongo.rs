@@ -4,7 +4,11 @@ use mongodb::{Client, Collection};
 
 use crate::{
     errors::StaccError,
-    models::{data::BackgroundGIF, post::PostData, visitor::Visitor},
+    models::{
+        data::{BackgroundGIF, Story},
+        post::PostData,
+        visitor::Visitor,
+    },
 };
 
 use super::environment::EnvironmentVariables;
@@ -15,6 +19,8 @@ pub struct Mongo {
     pub backgrounds_collection: Collection<BackgroundGIF>,
     /// The collection containing posts.
     pub posts_collection: Collection<PostData>,
+    /// The collection containing 404 page stories.
+    pub stories_collection: Collection<Story>,
     /// The collection containing visitor information.
     pub visitor_collection: Collection<Visitor>,
 }
@@ -37,6 +43,8 @@ impl Mongo {
             ),
             posts_collection: database
                 .collection::<PostData>(&EnvironmentVariables::StaccPostsCollectionName.env_var()?),
+            stories_collection: database
+                .collection::<Story>(&EnvironmentVariables::StaccStoriesCollectionName.env_var()?),
             visitor_collection: database.collection::<Visitor>(
                 &EnvironmentVariables::StaccVisitorsCollectionName.env_var()?,
             ),
