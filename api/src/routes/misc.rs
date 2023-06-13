@@ -66,3 +66,36 @@ pub async fn get_background_gif(mongo: Data<Mongo>) -> Result<HttpResponse, Stac
 
     Ok(HttpResponse::Ok().cookie(cookie).json(background_gif))
 }
+
+/// Get a 404 page story by choosing a random story stored in the stories collection.
+#[get("/story")]
+pub async fn story(mongo: Data<Mongo>) -> Result<HttpResponse, StaccResponseError> {
+    let document_count = mongo
+        .stories_collection
+        .count_documents(doc! {}, None)
+        .await
+        .map_err(|error| StaccResponseError::MongoDBError {
+            error: error.to_string(),
+        })?;
+
+    let mut rng = rand::thread_rng();
+    let random_index = rng.gen_range(0..document_count);
+
+    let story = mongo
+        .stories_collection
+        .find_one(
+            doc! {},
+            FindOneOptions::builder().skip(random_index).build(),
+        )
+        .await
+        .ok()
+        .flatten()
+        .map_or_else(
+            || Story {
+                story: FALLBACK_STORY.to_string(),
+            },
+            |story| story,
+        );
+
+    Ok(HttpResponse::Ok().json(story))
+}
