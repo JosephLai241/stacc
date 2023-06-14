@@ -1,7 +1,5 @@
 //! Contains all errors that may be raised in `stacc`.
 
-use std::env::VarError;
-
 use actix_web::{
     body::BoxBody,
     http::{header::ContentType, StatusCode},
@@ -50,13 +48,13 @@ impl ResponseError for StaccResponseError {
 pub enum StaccError {
     /// Something fucked up while retrieving an environment variable.
     #[error("Environment error: {0}")]
-    EnvironmentError(#[from] VarError),
+    Environment(#[from] std::env::VarError),
 
     /// Something fucked up with MongoDB.
     #[error("MongoDB error: {0}")]
-    MongoDBError(#[from] mongodb::error::Error),
+    MongoDB(#[from] mongodb::error::Error),
 
     /// Something fucked up while making a request with `reqwest`.
     #[error("Reqwest error: {0}")]
-    ReqwestError(#[from] reqwest::Error),
+    Reqwest(#[from] reqwest::Error),
 }

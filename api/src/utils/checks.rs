@@ -52,7 +52,7 @@ pub fn run_environment_checks() -> Result<(), StaccError> {
             missing_keys
         );
 
-        return Err(StaccError::EnvironmentError(VarError::NotPresent));
+        return Err(StaccError::Environment(VarError::NotPresent));
     }
 
     println!(
