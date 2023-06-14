@@ -16,6 +16,7 @@ lazy_static! {
         "MONGO_PASSWORD",
         "MONGO_URI",
         "MONGO_USER",
+        "STACC_API_PORT_NUMBER",
         "STACC_BACKGROUNDS_COLLECTION_NAME",
         "STACC_DATABASE",
         "STACC_DOMAIN",
