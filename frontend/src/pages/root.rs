@@ -5,6 +5,7 @@ use chrono_tz::America::Chicago;
 use futures_util::{future::ready, StreamExt};
 use gloo_console::error;
 use gloo_timers::future::IntervalStream;
+use lazy_static::lazy_static;
 use yew::prelude::*;
 
 use crate::{
@@ -14,6 +15,11 @@ use crate::{
     },
     FAVICON_GIF,
 };
+
+lazy_static! {
+    /// The timestamp format to display in the `Clock` component.
+    static ref TIMESTAMP_FORMAT: &'static str = "%Y/%m/%d %H:%M:%S CHICAGO";
+}
 
 /// The root component.
 #[function_component(Root)]
@@ -61,12 +67,10 @@ pub fn root() -> Html {
 /// A clock component that renders Chicago time. This timestamp updates every second.
 #[function_component(Clock)]
 fn clock() -> Html {
-    let timestamp_format = "%Y/%m/%d %H:%M:%S CHICAGO".to_string();
-
     let current_utc = Utc::now().naive_utc().timestamp_nanos();
     let timestamp = Chicago
         .timestamp_nanos(current_utc)
-        .format(&timestamp_format)
+        .format(&TIMESTAMP_FORMAT)
         .to_string();
 
     wasm_bindgen_futures::spawn_local(async move {
@@ -76,7 +80,7 @@ fn clock() -> Html {
                     let current_utc = Utc::now().naive_utc().timestamp_nanos();
                     let new_timestamp = Chicago
                         .timestamp_nanos(current_utc)
-                        .format(&timestamp_format)
+                        .format(&TIMESTAMP_FORMAT)
                         .to_string();
 
                     clock_element.set_inner_html(&new_timestamp);
@@ -109,7 +113,9 @@ fn shades_of_rust() -> Html {
           <a href="https://i.imgur.com/mzCEmev.jpg">
             <div class="color-box" style="background-color: #802e0a;"></div>
           </a>
+          <a href="https://www.teepublic.com/t-shirt/27609036-i-hate-java">
             <div class="color-box" style="background-color: #6e2708;"></div>
+          </a>
           <a href="https://videos.danksquad.org/w/cca8b880-87d2-4ce5-815f-7e2c020d5b75">
             <div class="color-box" style="background-color: #5c2107;"></div>
           </a>
