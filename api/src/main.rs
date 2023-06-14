@@ -2,15 +2,18 @@
 
 use std::env;
 
+use actix_cors::Cors;
 use actix_web::{
+    http::header,
+    middleware::Logger,
     web::{self, Data},
     App, HttpServer,
 };
 use ansi_term::{Color, Style};
 use dotenv::dotenv;
-
 use env_logger::Env;
-use utils::mongo::Mongo;
+
+use utils::{environment::EnvironmentVariables, mongo::Mongo};
 
 mod errors;
 mod middleware;
@@ -42,15 +45,29 @@ async fn main() {
         );
 
         HttpServer::new(move || {
-            App::new().app_data(mongo.clone()).service(
-                web::scope("api")
-                    .service(routes::misc::get_background_gif)
-                    .service(
-                        web::scope("/blog")
-                            .service(routes::posts::get_all_posts)
-                            .service(routes::posts::get_single_post),
-                    ),
-            )
+            App::new()
+                .app_data(mongo.clone())
+                .service(
+                    web::scope("api")
+                        .service(routes::misc::get_background_gif)
+                        .service(routes::misc::story)
+                        .service(
+                            web::scope("/blog")
+                                .service(routes::posts::get_all_posts)
+                                .service(routes::posts::get_single_post),
+                        ),
+                )
+                .wrap(
+                    Cors::default()
+                        .allowed_header(header::CONTENT_TYPE)
+                        .allowed_methods(vec!["GET"])
+                        .allowed_origin(
+                            &EnvironmentVariables::StaccDomain
+                                .env_var()
+                                .unwrap_or("UNKNOWN".to_string()),
+                        ),
+                )
+                .wrap(Logger::default())
         })
         .bind(("127.0.0.1", 8081))
         .expect("FAILED TO BIND TO THE SOCKET ADDRESS")
