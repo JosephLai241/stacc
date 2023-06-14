@@ -3,17 +3,16 @@
 use actix_web::{
     get,
     web::{Data, Path},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use futures_util::stream::StreamExt;
+use log::error;
 use mongodb::bson::doc;
 
 use crate::{
     errors::StaccResponseError,
-    models::{
-        data::Response,
-        post::{AllPosts, PostData},
-    },
+    middleware,
+    models::post::{AllPosts, PostData},
     utils::mongo::Mongo,
 };
 
@@ -52,6 +51,7 @@ pub async fn get_all_posts(mongo: Data<Mongo>) -> Result<HttpResponse, StaccResp
 pub async fn get_single_post(
     mongo: Data<Mongo>,
     post_id: Path<String>,
+    request: HttpRequest,
 ) -> Result<HttpResponse, StaccResponseError> {
     let post_id = post_id.into_inner();
 
@@ -65,9 +65,15 @@ pub async fn get_single_post(
         .await;
 
     match find_result {
-        Ok(Some(post)) => Ok(HttpResponse::Ok().json(post)),
+        Ok(Some(post)) => {
+            if let Err(error) = middleware::log_post_view(&mongo, &post_id, &request).await {
+                error!("{}", error);
+            }
+
+            Ok(HttpResponse::Ok().json(post))
+        }
         Ok(None) => Err(StaccResponseError::MongoDBSearchError {
-            error: format!("Post with ID {post_id} not found!"),
+            error: "Post not found!".to_string(),
         }),
         Err(error) => Err(StaccResponseError::MongoDBError {
             error: error.to_string(),
