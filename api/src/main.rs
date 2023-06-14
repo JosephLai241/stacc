@@ -69,7 +69,12 @@ async fn main() {
                 )
                 .wrap(Logger::default())
         })
-        .bind(("127.0.0.1", 8081))
+        .bind(format!(
+            "127.0.0.1:{}",
+            &EnvironmentVariables::StaccAPIPortNumber
+                .env_var()
+                .expect("FAILED TO GET API PORT NUMBER")
+        ))
         .expect("FAILED TO BIND TO THE SOCKET ADDRESS")
         .run()
         .await
