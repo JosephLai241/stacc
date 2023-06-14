@@ -47,6 +47,7 @@ button:hover {
 footer {
   display: flex;
   justify-content: flex-end;
+  margin-right: 6rem !important;
   margin-top: auto;
   padding: 20px;
 }
