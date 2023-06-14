@@ -22,10 +22,6 @@ pub struct Visitor {
     /// The key corresponds with the post's ID, and the value corresponds with the number of
     /// refreshes this visitor has made for a particular post.
     pub visited_posts: HashMap<String, i32>,
-    /// The zines that this visitor has loaded.
-    /// The key corresponds with the zine's ID, and the value corresponds with the number of
-    /// refreshes this visitor has made for a particular zine.
-    pub visited_zines: HashMap<String, i32>,
 }
 
 impl Visitor {
@@ -38,7 +34,6 @@ impl Visitor {
             last_visit_date: None,
             refresh_count: 0,
             visited_posts: HashMap::new(),
-            visited_zines: HashMap::new(),
         }
     }
 }
