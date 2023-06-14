@@ -48,22 +48,22 @@ pub fn blog() -> Html {
                     .unwrap_or_else(|error| error!(error.to_string()));
 
                     match Request::get("/api/blog/posts").send().await {
-                        Ok(response) => match response.json::<AllPosts>().await {
-                            Ok(mut all_posts) => {
-                                all_posts.posts = all_posts.posts.into_iter().rev().collect();
-
-                                is_loading.set(false);
-                                get_posts_response.set(Some(Ok(all_posts)))
-                            }
-                            Err(error) => {
+                        Ok(response) => response.json::<AllPosts>().await.map_or_else(
+                            |error| {
                                 is_loading.set(false);
                                 get_posts_response.set(Some(Err(
                                     Response::status_500_with_message(format!(
                                         "UNABLE TO PARSE THE POSTS TO JSON: {error}"
                                     )),
                                 )))
-                            }
-                        },
+                            },
+                            |mut all_posts| {
+                                all_posts.posts = all_posts.posts.into_iter().rev().collect();
+
+                                is_loading.set(false);
+                                get_posts_response.set(Some(Ok(all_posts)))
+                            },
+                        ),
                         Err(error) => {
                             is_loading.set(false);
                             get_posts_response.set(Some(Err(Response::status_500_with_message(
@@ -128,7 +128,7 @@ pub fn blog() -> Html {
         if *is_loading {
             html! { <Loading /> }
         } else {
-            html! { blog_body }
+            blog_body
         },
     )
 }

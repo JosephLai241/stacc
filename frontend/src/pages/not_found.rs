@@ -99,13 +99,9 @@ pub fn not_found() -> Html {
             <div class="left-half-container">
             {
                 if *is_loading {
-                    html! {
-                        <div class="d-flex flex-column centered-loading">
-                          <Loading />
-                        </div>
-                    }
+                    html! { <Loading /> }
                 } else {
-                    html! { story }
+                    story
                 }
             }
             </div>

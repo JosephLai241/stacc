@@ -49,27 +49,8 @@ pub fn post_view(props: &PostViewProps) -> Html {
                         .await
                     {
                         Ok(response) => match response.status() {
-                            200 => match response.json::<PostData>().await {
-                                Ok(post_data) => {
-                                    is_loading.set(false);
-
-                                    open_graph::set_open_graph_tag(OpenGraphTag::Description(
-                                        post_data.preview_summary.clone(),
-                                    ))
-                                    .unwrap_or_else(|error| error!(error.to_string()));
-                                    open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(
-                                        post_data.preview_image_link.clone(),
-                                    ))
-                                    .unwrap_or_else(|error| error!(error.to_string()));
-                                    open_graph::set_open_graph_tag(OpenGraphTag::Title(format!(
-                                        "jl | blog | {}",
-                                        post_data.title
-                                    )))
-                                    .unwrap_or_else(|error| error!(error.to_string()));
-
-                                    get_post_response.set(Some(Ok(post_data)));
-                                }
-                                Err(error) => {
+                            200 => response.json::<PostData>().await.map_or_else(
+                                |error| {
                                     is_loading.set(false);
 
                                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
@@ -89,29 +70,30 @@ pub fn post_view(props: &PostViewProps) -> Html {
                                         Response::status_500_with_message(format!(
                                             "UNABLE TO PARSE THE POST DATA TO JSON: {error}"
                                         )),
-                                    )))
-                                }
-                            },
-                            _ => match response.json::<Response>().await {
-                                Ok(response) => {
+                                    )));
+                                },
+                                |post_data| {
                                     is_loading.set(false);
 
                                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
-                                        "something fucked up".to_string(),
+                                        post_data.preview_summary.clone(),
                                     ))
                                     .unwrap_or_else(|error| error!(error.to_string()));
                                     open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(
-                                        FAVICON_GIF.to_string(),
+                                        post_data.preview_image_link.clone(),
                                     ))
                                     .unwrap_or_else(|error| error!(error.to_string()));
-                                    open_graph::set_open_graph_tag(OpenGraphTag::Title(
-                                        "jl | blog | fuck".to_string(),
-                                    ))
+                                    open_graph::set_open_graph_tag(OpenGraphTag::Title(format!(
+                                        "jl | blog | {}",
+                                        post_data.title
+                                    )))
                                     .unwrap_or_else(|error| error!(error.to_string()));
 
-                                    get_post_response.set(Some(Err(response)))
-                                }
-                                Err(error) => {
+                                    get_post_response.set(Some(Ok(post_data)));
+                                },
+                            ),
+                            _ => response.json::<Response>().await.map_or_else(
+                                |_| {
                                     is_loading.set(false);
 
                                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
@@ -128,19 +110,37 @@ pub fn post_view(props: &PostViewProps) -> Html {
                                     .unwrap_or_else(|error| error!(error.to_string()));
 
                                     get_post_response.set(Some(Err(
-                                        Response::status_500_with_message(format!(
-                                            "UNABLE TO PARSE THE API RESPONSE TO JSON: {error}"
-                                        )),
-                                    )))
-                                }
-                            },
+                                        Response::status_500_with_message(
+                                            "No API response.".to_string(),
+                                        ),
+                                    )));
+                                },
+                                |response| {
+                                    is_loading.set(false);
+
+                                    open_graph::set_open_graph_tag(OpenGraphTag::Description(
+                                        "something fucked up".to_string(),
+                                    ))
+                                    .unwrap_or_else(|error| error!(error.to_string()));
+                                    open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(
+                                        FAVICON_GIF.to_string(),
+                                    ))
+                                    .unwrap_or_else(|error| error!(error.to_string()));
+                                    open_graph::set_open_graph_tag(OpenGraphTag::Title(
+                                        "jl | blog | fuck".to_string(),
+                                    ))
+                                    .unwrap_or_else(|error| error!(error.to_string()));
+
+                                    get_post_response.set(Some(Err(response)));
+                                },
+                            ),
                         },
                         Err(error) => {
                             is_loading.set(false);
 
                             get_post_response.set(Some(Err(Response::status_500_with_message(
                                 format!("UNABLE TO GET THE POST FROM THE API: {error}"),
-                            ))))
+                            ))));
                         }
                     }
                 });
@@ -159,39 +159,41 @@ pub fn post_view(props: &PostViewProps) -> Html {
     let post_body = match response {
         Ok(post_data) => {
             let post_skeleton = html! {
-                <div class="d-flex flex-column">
-                  <div style="margin-bottom: 1rem !important;">
-                    <img alt={"FUCK. COULDN'T LOAD THE IMAGE."} src={ post_data.preview_image_link.clone() } />
-                  </div>
-                  <h1 class="error-text" style="margin-bottom: 1rem !important;">
-                    { post_data.title.clone() }
-                  </h1>
-                  <h5>
-                    { post_data.created }
-                  </h5>
-                  {
-                    if let Some(edited) = post_data.edited {
-                        html! {
-                            <div>
-                              <small>
-                                { format!("[ edited {edited} ]") }
-                              </small>
-                            </div>
-                        }
-                    } else {
-                        html! { <></> }
+                <div class="fade-in-slide-down">
+                  <div class="d-flex flex-column">
+                    <div style="margin-bottom: 1rem !important;">
+                      <img alt={"FUCK. COULDN'T LOAD THE IMAGE."} src={ post_data.preview_image_link.clone() } />
+                    </div>
+                    <h1 class="error-text" style="margin-bottom: 1rem !important;">
+                      { post_data.title.clone() }
+                    </h1>
+                    <h5>
+                      { post_data.created }
+                    </h5>
+                    {
+                      if let Some(edited) = post_data.edited {
+                          html! {
+                              <div>
+                                <small>
+                                  { format!("[ edited {edited} ]") }
+                                </small>
+                              </div>
+                          }
+                      } else {
+                          html! { <></> }
+                      }
                     }
-                  }
-                  <div style="display: flex; margin-bottom: 1rem !important;">
-                    <span class="badge p-2 blog-post-topic-badge">
-                      { post_data.topic }
-                    </span>
+                    <div style="display: flex; margin-bottom: 1rem !important;">
+                      <span class="badge p-2 blog-post-topic-badge">
+                        { post_data.topic }
+                      </span>
+                    </div>
+                    <p class="blog-post-preview-summary">
+                      { post_data.preview_summary }
+                    </p>
+                    <div class="rusty-line-thicc"></div>
+                    <div id="post-content"></div>
                   </div>
-                  <p class="blog-post-preview-summary">
-                    { post_data.preview_summary }
-                  </p>
-                  <div class="rusty-line-thicc"></div>
-                  <div id="post-content"></div>
                 </div>
             };
 
@@ -222,13 +224,9 @@ pub fn post_view(props: &PostViewProps) -> Html {
             <div class="blog-post fade-in-slide-down">
             {
                 if *is_loading {
-                    html! {
-                        <div class="d-flex flex-column centered-loading">
-                          <Loading />
-                        </div>
-                    }
+                    html! { <Loading /> }
                 } else {
-                    html! { post_body }
+                    post_body
                 }
             }
             </div>

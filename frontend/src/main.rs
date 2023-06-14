@@ -48,7 +48,7 @@ fn switch(route: Route) -> Html {
         Route::About => html! { <About /> },
         Route::Blog => html! { <Blog /> },
         Route::NotFound => html! { <NotFound /> },
-        Route::PostView { post_id } => html! { <PostView post_id={post_id.clone()} /> },
+        Route::PostView { post_id } => html! { <PostView post_id={post_id} /> },
         Route::Root => html! { <Root /> },
     }
 }

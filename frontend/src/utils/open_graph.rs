@@ -14,6 +14,15 @@ pub enum PageType {
     Website,
 }
 
+impl ToString for PageType {
+    fn to_string(&self) -> String {
+        match self {
+            PageType::Article => "article".to_string(),
+            PageType::Website => "website".to_string(),
+        }
+    }
+}
+
 /// Contains all Open Graph tags to set on the page.
 #[derive(Debug)]
 pub enum OpenGraphTag {
@@ -31,20 +40,19 @@ pub enum OpenGraphTag {
 
 impl OpenGraphTag {
     /// Convert the enum variant to a tuple containing the tag's property and content attributes.
-    pub fn to_tuple(self) -> (String, String) {
+    pub fn to_tuple(&self) -> (String, String) {
         match self {
-            OpenGraphTag::Description(description) => ("og:description".to_string(), description),
-            OpenGraphTag::ImageLink(link) => ("og:image".to_string(), link),
+            OpenGraphTag::Description(description) => {
+                ("og:description".to_string(), description.clone())
+            }
+            OpenGraphTag::ImageLink(link) => ("og:image".to_string(), link.clone()),
             OpenGraphTag::PageType(page_type) => {
-                let content = match page_type {
-                    PageType::Article => "article".to_string(),
-                    PageType::Website => "website".to_string(),
-                };
+                let content = page_type.to_string();
 
                 ("og:type".to_string(), content)
             }
-            OpenGraphTag::Title(title) => ("og:title".to_string(), title),
-            OpenGraphTag::Url(url) => ("og:url".to_string(), url),
+            OpenGraphTag::Title(title) => ("og:title".to_string(), title.clone()),
+            OpenGraphTag::Url(url) => ("og:url".to_string(), url.clone()),
         }
     }
 }
