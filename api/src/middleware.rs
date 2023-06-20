@@ -3,7 +3,7 @@
 use actix_web::{web::Data, HttpRequest};
 use chrono::Utc;
 use lazy_static::lazy_static;
-use log::info;
+use log::{info, warn};
 use mongodb::{
     bson::doc,
     options::{FindOneAndUpdateOptions, ReturnDocument},
@@ -85,8 +85,8 @@ pub async fn log_post_view(
             )
             .await?;
     } else {
-        log::warn!("FAILED TO GRAB POST VISITOR'S IP ADDRESS!");
-        log::warn!("VISITED POST ID: {post_id}");
+        warn!("FAILED TO GRAB POST VISITOR'S IP ADDRESS!");
+        warn!("VISITED POST ID: {post_id}");
     }
 
     Ok(())
@@ -130,7 +130,7 @@ pub async fn log_visitor_data(
                 .map_or_else(|error| Err(StaccError::MongoDB(error)), |_| Ok(()));
         }
     } else {
-        log::warn!("FAILED TO GRAB VISITOR'S IP ADDRESS!");
+        warn!("FAILED TO GRAB VISITOR'S IP ADDRESS!");
     }
 
     Ok(())
@@ -138,7 +138,7 @@ pub async fn log_visitor_data(
 
 /// Query `ip-api.com` for IP metadata.
 async fn get_ip_data(ip: &str) -> Result<IPData, StaccError> {
-    log::info!("👀 LOGGING A NEW VISITOR: {}", ip);
+    info!("👀 LOGGING A NEW VISITOR: {}", ip);
 
     let endpoint = "http://ip-api.com/json/";
 
