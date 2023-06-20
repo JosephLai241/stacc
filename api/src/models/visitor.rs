@@ -16,7 +16,12 @@ pub struct Visitor {
     pub ip_data: Option<IPData>,
     /// The last visit date from this visitor's IP address.
     pub last_visit_date: Option<String>,
-    /// The number of times this visitor has refreshed a request.
+    /// The approximate number of times this visitor has refreshed the site. This number is only
+    /// incremented when the user has done one of the following:
+    /// 1. Refreshed the background GIF.
+    /// 2. Refreshed the 404 page.
+    /// 3. Loaded/refreshed the blog page containing all blog posts.
+    /// 4. Loaded/refreshed a particular post.
     pub refresh_count: i32,
     /// The posts that this visitor has loaded.
     /// The key corresponds with the post's ID, and the value corresponds with the number of
@@ -32,7 +37,7 @@ impl Visitor {
             ip_address,
             ip_data: None,
             last_visit_date: None,
-            refresh_count: 0,
+            refresh_count: 1,
             visited_posts: HashMap::new(),
         }
     }
