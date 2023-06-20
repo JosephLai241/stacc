@@ -30,6 +30,27 @@ lazy_static! {
     static ref FALLBACK_STORY: &'static str = "If you don’t like the road you’re walking, pave another one. Except for this one.";
 }
 
+/// Create a cookie that stores the background GIF link. Returns `Some(Cookie)` if able to retrieve
+/// the `EnvironmentVariables::StaccDomain` value, otherwise returns `None`.
+fn create_background_cookie<'cookie>(background_gif: String) -> Option<Cookie<'cookie>> {
+    EnvironmentVariables::StaccDomain
+        .env_var()
+        .ok()
+        .map_or_else(
+            || None,
+            |domain| {
+                Some(
+                    Cookie::build("background", background_gif)
+                        .domain(domain)
+                        .expires(None)
+                        .path("/")
+                        .same_site(SameSite::Strict)
+                        .finish(),
+                )
+            },
+        )
+}
+
 /// Get the background GIF by choosing a random link stored in the backgrounds collection.
 #[get("/background")]
 pub async fn get_background_gif(
@@ -71,18 +92,10 @@ pub async fn get_background_gif(
             |gif| gif,
         );
 
-    let cookie = Cookie::build("background", background_gif.link.clone())
-        .domain(
-            EnvironmentVariables::StaccDomain
-                .env_var()
-                .expect("FAILED TO SET THE DOMAIN FOR THE BACKGROUND COOKIE"),
-        )
-        .expires(None)
-        .path("/")
-        .same_site(SameSite::Strict)
-        .finish();
-
-    Ok(HttpResponse::Ok().cookie(cookie).json(background_gif))
+    match create_background_cookie(background_gif.link.clone()) {
+        Some(cookie) => Ok(HttpResponse::Ok().cookie(cookie).json(background_gif)),
+        None => Ok(HttpResponse::Ok().json(background_gif)),
+    }
 }
 
 /// Get a 404 page story by choosing a random story stored in the stories collection.
