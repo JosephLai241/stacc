@@ -18,7 +18,14 @@ use crate::{
 
 /// Get all posts from MongoDB.
 #[get("/posts")]
-pub async fn get_all_posts(mongo: Data<Mongo>) -> Result<HttpResponse, StaccResponseError> {
+pub async fn get_all_posts(
+    mongo: Data<Mongo>,
+    request: HttpRequest,
+) -> Result<HttpResponse, StaccResponseError> {
+    if let Err(error) = middleware::log_visitor_data(&mongo, &request).await {
+        error!("{}", error);
+    }
+
     let mut posts: Vec<PostData> = Vec::new();
 
     match mongo.posts_collection.find(doc! {}, None).await {
@@ -53,6 +60,10 @@ pub async fn get_single_post(
     post_id: Path<String>,
     request: HttpRequest,
 ) -> Result<HttpResponse, StaccResponseError> {
+    if let Err(error) = middleware::log_visitor_data(&mongo, &request).await {
+        error!("{}", error);
+    }
+
     let post_id = post_id.into_inner();
 
     let find_result = mongo
