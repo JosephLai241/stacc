@@ -23,6 +23,7 @@ lazy_static! {
         "STACC_POSTS_COLLECTION_NAME",
         "STACC_STORIES_COLLECTION_NAME",
         "STACC_VISITORS_COLLECTION_NAME",
+        "SOCRATA_APP_TOKEN"
     ];
 }
 

@@ -12,6 +12,8 @@ pub enum EnvironmentVariables {
     MongoDBURI,
     /// The MongoDB user.
     MongoDBUser,
+    /// The Socrata app token for Chicago map-related data.
+    SocrataAppToken,
     /// The port number the API runs on.
     StaccAPIPortNumber,
     /// The name of the collection that contains all backgrounds.
@@ -35,6 +37,7 @@ impl EnvironmentVariables {
             Self::MongoDBPassword => Ok(env::var("MONGO_PASSWORD")?),
             Self::MongoDBURI => Ok(env::var("MONGO_URI")?),
             Self::MongoDBUser => Ok(env::var("MONGO_USER")?),
+            Self::SocrataAppToken => Ok(env::var("SOCRATA_APP_TOKEN")?),
             Self::StaccAPIPortNumber => Ok(env::var("STACC_API_PORT_NUMBER")?),
             Self::StaccBackgroundsCollectionName => {
                 Ok(env::var("STACC_BACKGROUNDS_COLLECTION_NAME")?)
