@@ -29,10 +29,10 @@ lazy_static! {
     /// The default fallback story if selecting a random story from MongoDB fails.
     static ref FALLBACK_STORY: &'static str = "If you don’t like the road you’re walking, pave another one. Except for this one.";
 
-    /// The API endpoint for the Victims of Homicides and Non-Fatal Shootings data.
-    static ref VHNFS_ENDPOINT: &'static str = "https://data.cityofchicago.org/resource/gumc-mgzr.json";
     /// The API endpoint for the ShotSpotter Alerts data.
     static ref SHOTSPOTTER_ENDPOINT: &'static str = "https://data.cityofchicago.org/resource/3h7q-7mdb.json";
+    /// The API endpoint for the Victims of Homicides and Non-Fatal Shootings data.
+    static ref VHNFS_ENDPOINT: &'static str = "https://data.cityofchicago.org/resource/gumc-mgzr.json";
 }
 
 /// Create a cookie that stores the background GIF link. Returns `Some(Cookie)` if able to retrieve
