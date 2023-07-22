@@ -49,6 +49,7 @@ async fn main() {
                 .app_data(mongo.clone())
                 .service(
                     web::scope("api")
+                        .service(routes::misc::chiraq)
                         .service(routes::misc::get_background_gif)
                         .service(routes::misc::story)
                         .service(
