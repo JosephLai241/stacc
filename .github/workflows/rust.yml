@@ -14,36 +14,10 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
-      - name: Entering api/ directory
-        run: cd api/
-
-      - name: Print CWD
-        run: pwd
-
-      - name: Print contents
-        run: ls -la
-
-      - name: Entering frontend/ directory
-        run: cd api/
-
-      - name: Print CWD
-        run: pwd
-
-      - name: Print contents
-        run: ls -la
-
-      - name: Running Rustfmt check on api/
+      - name: Running Rustfmt check
         uses: mbrobbel/rustfmt-check@master
         with:
-          commit-message: "✨ Formatted with Rustfmt ✨"
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Entering frontend/ directory
-        run: cd ../frontend/
-
-      - name: Running Rustfmt check on frontend/
-        uses: mbrobbel/rustfmt-check@master
-        with:
+          args: "--manifest-path api/Cargo.toml"
           commit-message: "✨ Formatted with Rustfmt ✨"
           token: ${{ secrets.GITHUB_TOKEN }}
 
