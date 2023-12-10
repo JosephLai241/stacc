@@ -1,13 +1,11 @@
 FROM rust:1.67
 
-WORKDIR /app
+WORKDIR /api
 
-COPY Cargo.* ./
+COPY . .
 
 RUN cargo build --release
 
-COPY src ./src
-
-EXPOSE $PORT_NUMBER
+EXPOSE $STACC_API_PORT_NUMBER
 
 CMD [ "target/release/api" ]
