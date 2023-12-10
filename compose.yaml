@@ -1,0 +1,11 @@
+services:
+  api:
+    build: api/
+    env_file: api/.env
+    ports:
+      - "${STACC_API_PORT_NUMBER}:${STACC_API_PORT_NUMBER}"
+
+  frontend:
+    build: frontend/
+    depends_on:
+      - api
