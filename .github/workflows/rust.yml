@@ -17,6 +17,9 @@ jobs:
       - name: Entering api/ directory
         run: cd api/
 
+      - name: Print CWD
+        run: pwd
+
       - name: Running Rustfmt check on api/
         uses: mbrobbel/rustfmt-check@master
         with:
@@ -42,7 +45,8 @@ jobs:
         with:
           components: clippy
 
-      - uses: giraffate/clippy-action@v1
+      - name: Run Clippy check
+        uses: giraffate/clippy-action@v1
         with:
           reporter: "github-pr-review"
           github_token: ${{ secrets.GITHUB_TOKEN }}
