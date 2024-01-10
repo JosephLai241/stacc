@@ -2,7 +2,7 @@
 authors = ["Joseph Lai"]
 edition = "2021"
 name = "frontend"
-version = "1.0.0"
+version = "1.0.1"
 
 [dependencies]
 chrono = "0.4.24"
