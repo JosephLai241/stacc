@@ -1,0 +1,27 @@
+name: Prettier
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Prettify CSS, HTML, and Markdown files
+        uses: creyD/prettier_action@v4.3
+        with:
+          commit_message: "✨ Prettified code ✨"
+          same_commit: true
+          prettier_options: --write --trailing-comma es5 **/*.{css,html,md}
