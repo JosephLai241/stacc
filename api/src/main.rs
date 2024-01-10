@@ -23,6 +23,8 @@ mod utils;
 
 #[actix_web::main]
 async fn main() {
+    println!("O!");
+
     println!(
         "\n{}",
         Style::default().bold().paint("🚀 Initializing API.")
