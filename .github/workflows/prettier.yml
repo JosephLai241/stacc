@@ -18,11 +18,11 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Prettify CSS, HTML, and Markdown files
         uses: creyD/prettier_action@v4.3
         with:
           commit_message: "✨ Prettified code ✨"
-          same_commit: true
           prettier_options: --write --trailing-comma es5 **/*.{css,html,md}
+          same_commit: true
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
