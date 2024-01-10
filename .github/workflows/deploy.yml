@@ -99,22 +99,22 @@ jobs:
             exit 1
           fi
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log into Docker Hub
-        run: |
-          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login \
-          -u ${{ secrets.DOCKERHUB_USERNAME }} \
-          --password-stdin
+        uses: docker/login-action@v3
+        with:
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
 
-      - name: Build and tag Docker image
-        run: |
-          docker build \
-            -t jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }} \
-            api \
-            --build-arg STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }} \
-            --platform linux/amd64
-          docker tag \
-            jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }} \
-            jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }}
-
-      - name: Push Docker image to Docker Hub
-        run: docker push jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }}
+      - name: Build image, then push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          build-args:
+            - "STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}"
+          context: api/
+          platforms:
+            - linux/amd64
+          push: true
+          tags: jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }}
