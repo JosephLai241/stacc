@@ -112,7 +112,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args:
-            - STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}
+            - "STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}"
           context: api/
           platforms:
             - linux/amd64
