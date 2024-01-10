@@ -3,3 +3,7 @@ target/
 
 api/.env
 Cargo.lock
+
+# Environment file containing Docker compose build arguments dynamically loaded
+# when running `docker compose up`.
+.compose-env
