@@ -21,6 +21,8 @@ lazy_static! {
 /// The main application entry point.
 #[function_component(Main)]
 fn app() -> Html {
+    println!("O!");
+
     let version_number = env!("CARGO_PKG_VERSION");
 
     html! {
