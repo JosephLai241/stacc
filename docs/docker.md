@@ -18,7 +18,7 @@ This section contains instructions for running a manual build, tag, and push of 
 cd api/
 docker build \
     -t jlai241/stacc-api:<VERSION_NUMBER> . \
-    --build-arg STACC_API_PORT_NUMBER=<PORT_NUMBER>
+    --build-arg STACC_API_PORT_NUMBER=<PORT_NUMBER> \
     --platform linux/amd64
 ```
 
