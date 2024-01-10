@@ -111,10 +111,10 @@ jobs:
       - name: Build image, then push to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          build-args:
-            - "STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}"
+          build-args: |
+            STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}
           context: api/
-          platforms:
-            - linux/amd64
+          platforms: |
+            linux/amd64
           push: true
           tags: jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }}
