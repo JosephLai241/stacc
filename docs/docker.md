@@ -38,7 +38,7 @@ docker tag jlai241/stacc-api:<VERSION_NUMBER> jlai241/stacc-api:<VERSION_NUMBER>
 docker push jlai241/stacc-api:<VERSION_NUMBER>
 ```
 
-4. Check if the tag and new image was successfully uploaded to Docker Hub. [Here's a link to the stacc-api private repository in Docker Hub](https://hub.docker.com/repository/docker/jlai241/stacc-api/general)
+4. Check if the tag and new image was successfully uploaded to Docker Hub. [Here's a link to the stacc-api repository in Docker Hub](https://hub.docker.com/repository/docker/jlai241/stacc-api/general)
 
 # Pulling From Docker Hub in the Droplet
 
