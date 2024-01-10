@@ -110,6 +110,7 @@ jobs:
           docker build \
             -t jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }} \
             api \
+            --build-arg STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }} \
             --platform linux/amd64
           docker tag \
             jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }} \
