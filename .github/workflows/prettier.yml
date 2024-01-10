@@ -25,4 +25,3 @@ jobs:
           commit_message: "✨ Prettified code ✨"
           prettier_options: --write --trailing-comma es5 **/*.{css,html,md}
           same_commit: true
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
