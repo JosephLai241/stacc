@@ -1,0 +1,120 @@
+name: Deploy JLD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: read
+
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+            frontend:
+              - 'frontend/**'
+
+  set-up-scp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add Droplet private SSH key and host
+        uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-host: ${{ secrets.DROPLET_IP }}
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: [changes, set-up-scp]
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Trunk
+        uses: jetli/trunk-action@v0.4.0
+        with:
+          version: "latest"
+
+      - name: Add wasm32-unknown-unknown target to rustup
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Build frontend
+        run: |
+          cd frontend/
+          trunk build --release
+
+      - name: SCP dist/ frontend build to Droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist/*"
+          strip_components: 2
+          target: /var/www/josephlai.dev/html
+          username: ${{ secrets.DROPLET_USERNAME }}
+
+  build-backend:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ needs.changes.outputs.api == 'true' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract API version from Cargo.toml
+        id: cargo_version_check
+        run: echo "version=$(grep -m 1 -oP 'version = "\K[^"]+' api/Cargo.toml)" >> $GITHUB_OUTPUT
+
+      - name: Extract API version from .env
+        id: env_version_check
+        run: echo "version=$(grep -m 1 -oP '^API_VERSION=\K\d+\.\d+\.\d+' .env)" >> $GITHUB_OUTPUT
+
+      - name: Check if API Cargo.toml version number matches top-level .env version
+        run: |
+          if [ ${{ steps.cargo_version_check.outputs.version }} = ${{ steps.env_version_check.outputs.version }} ]; then
+            echo "API version in Cargo.toml matches the version in .env!"
+          else
+            echo "API version in Cargo.toml does not match the version in .env. Run the version update script!"
+            exit 1
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Build image, then push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            STACC_API_PORT_NUMBER=${{ secrets.STACC_API_PORT_NUMBER }}
+          context: api/
+          platforms: |
+            linux/amd64
+          push: true
+          tags: jlai241/stacc-api:${{ steps.cargo_version_check.outputs.version }}

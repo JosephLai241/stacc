@@ -10,6 +10,11 @@
         /:/  /         \:\__\      \:\__\        \::/  /       \::/  /
         \/__/           \/__/       \/__/         \/__/         \/__/
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JosephLai241/stacc/deploy.yml?logo=github%20actions&label=Deploy)](https://github.com/JosephLai241/stacc/actions/workflows/deploy.yml)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JosephLai241/stacc/rust.yml?logo=rust&logoColor=orange&label=Rust%20code%20checks)](https://github.com/JosephLai241/stacc/actions/workflows/rust.yml)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JosephLai241/stacc/prettier.yml?logo=prettier&label=Prettier)](https://github.com/JosephLai241/stacc/actions/workflows/prettier.yml)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/jlai241/stacc-api?logo=docker&label=Docker%20version)](https://hub.docker.com/repository/docker/jlai241/stacc-api/general)
+
 # Table of Contents
 
 - [What Is This?](#what-is-this)

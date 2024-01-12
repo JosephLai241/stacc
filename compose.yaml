@@ -1,0 +1,9 @@
+services:
+  api:
+    env_file:
+      - api/.env
+    image: jlai241/stacc-api:${API_VERSION}
+    ports:
+      - ${STACC_API_PORT_NUMBER}:${STACC_API_PORT_NUMBER}
+    restart: always
+    user: ${PID}:${GID}
