@@ -14,6 +14,7 @@ gloo-timers = { version = "0.2.6", features = ["futures"] }
 gloo-utils = "0.1.6"
 js-sys = "0.3.63"
 lazy_static = "1.4.0"
+leaflet = "0.4.0"
 pulldown-cmark = "0.9.3"
 serde = { version = "1.0.163", features = ["derive"] }
 thiserror = "1.0.40"
