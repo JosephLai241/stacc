@@ -24,7 +24,7 @@ pub struct PostViewProps {
 /// The post view page.
 #[function_component(PostView)]
 pub fn post_view(props: &PostViewProps) -> Html {
-    background::set_background(false);
+    background::set_background(true);
 
     let post_id = props.post_id.clone();
 

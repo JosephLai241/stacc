@@ -17,7 +17,7 @@ use crate::{
 /// The 404 Not Found page.
 #[function_component(NotFound)]
 pub fn not_found() -> Html {
-    background::set_background(false);
+    background::set_background(true);
     gloo_utils::document().set_title("jl | 404");
 
     let is_loading = use_state(|| true);

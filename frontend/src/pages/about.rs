@@ -11,7 +11,7 @@ use crate::FAVICON_GIF;
 /// The about component.
 #[function_component(About)]
 pub fn about() -> Html {
-    background::set_background(false);
+    background::set_background(true);
     gloo_utils::document().set_title("jl | about");
 
     open_graph::set_open_graph_tag(OpenGraphTag::Description("about me".to_string()))

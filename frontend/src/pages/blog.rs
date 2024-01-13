@@ -18,7 +18,7 @@ use crate::FAVICON_GIF;
 /// The blog page.
 #[function_component(Blog)]
 pub fn blog() -> Html {
-    background::set_background(false);
+    background::set_background(true);
     gloo_utils::document().set_title("jl | blog");
 
     let is_loading = use_state(|| true);
