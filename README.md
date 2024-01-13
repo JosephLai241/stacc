@@ -15,6 +15,8 @@
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JosephLai241/stacc/prettier.yml?logo=prettier&label=Prettier)](https://github.com/JosephLai241/stacc/actions/workflows/prettier.yml)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/jlai241/stacc-api?logo=docker&label=Docker%20version)](https://hub.docker.com/repository/docker/jlai241/stacc-api/general)
 
+# 👉👉👉 [josephlai.dev][josephlai.dev] 👈👈👈
+
 # Table of Contents
 
 - [What Is This?](#what-is-this)
@@ -66,6 +68,7 @@ This project uses the following stack:
 [city of chicago ucr codes]: https://gis.chicagopolice.org/pages/crime_details
 [crt tv gif]: https://i.imgur.com/8F4N34p.gif
 [docker]: https://www.docker.com/
+[josephlai.dev]: https://josephlai.dev/
 [mongodb]: https://www.mongodb.com/
 [violence reduction - shotspotter alerts]: https://dev.socrata.com/foundry/data.cityofchicago.org/3h7q-7mdb
 [violence reduction - victims of homicides and non-fatal shootings]: https://dev.socrata.com/foundry/data.cityofchicago.org/gumc-mgzr
