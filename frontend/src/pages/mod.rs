@@ -6,3 +6,4 @@ pub mod not_found;
 pub mod post_view;
 pub mod root;
 pub mod utils;
+pub mod violence;
