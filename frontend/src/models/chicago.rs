@@ -250,7 +250,8 @@ pub struct ViolenceData {
     pub race: String,
     /// A single letter denoting the sex of the victim (ie. `F`, `M`).
     pub sex: String,
-    /// Crime classification as outlined in the FBI's Uniform Crime Reporting (UCR). See the Chicago Police Department listing of these classifications at: http://gis.chicagopolice.org/clearmapcrimesums/crime_type.
+    /// Crime classification as outlined in the FBI's Uniform Crime Reporting (UCR). See the Chicago
+    /// Police Department listing of these classifications at: http://gis.chicagopolice.org/clearmapcrimesums/crime_type.
     pub victimization_fbi_cd: String,
     /// The FBI's text description of the incident.
     /// FBI Description connects a text description of the category to FBI Code.
