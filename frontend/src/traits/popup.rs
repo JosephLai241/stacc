@@ -1,8 +1,6 @@
 //! Contains the trait and its implementations for creating map marker popups (the `violence`
 //! page).
 
-use chrono::{DateTime, NaiveDateTime, Utc};
-use chrono_tz::America::Chicago;
 use sha2::{Digest, Sha256};
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{
@@ -12,6 +10,7 @@ use web_sys::{
 use crate::{
     errors::StaccError,
     models::chicago::{ShotData, ViolenceData},
+    utils::date::format_date,
 };
 
 /// This trait enables the data for a given struct to be converted into an HTML popup by
@@ -20,7 +19,7 @@ pub trait Popup {
     /// Neatly display the data found in the struct in a popup.
     fn into_popup(&self) -> Result<JsValue, StaccError> {
         let hash_id = self.generate_id();
-        let timestamp = self.format_date();
+        let timestamp = self.get_date();
 
         let document = gloo_utils::document();
 
@@ -93,8 +92,8 @@ pub trait Popup {
     /// popup HTML element by referencing this value in the element's `id` attribute.
     fn generate_id(&self) -> String;
 
-    /// Format the date to a more human-readable format.
-    fn format_date(&self) -> String;
+    /// Get the human-readable date of this incident.
+    fn get_date(&self) -> String;
 }
 
 impl Popup for ShotData {
@@ -169,21 +168,8 @@ impl Popup for ShotData {
         hex::encode(hash_result)
     }
 
-    fn format_date(&self) -> String {
-        let parsed_datetime = NaiveDateTime::parse_from_str(&self.date, "%Y-%m-%dT%H:%M:%S%.3f")
-            .ok()
-            .map(|datetime| DateTime::<Utc>::from_utc(datetime, Utc));
-
-        let chicago_datetime = parsed_datetime.map(|datetime| datetime.with_timezone(&Chicago));
-
-        let formatted_str =
-            chicago_datetime.map(|datetime| datetime.format("%Y/%m/%d %H:%M:%S %Z").to_string());
-
-        if let Some(formatted_date) = formatted_str {
-            formatted_date
-        } else {
-            self.date.clone()
-        }
+    fn get_date(&self) -> String {
+        format_date(&self.date)
     }
 }
 
@@ -275,20 +261,7 @@ impl Popup for ViolenceData {
         hex::encode(hash_result)
     }
 
-    fn format_date(&self) -> String {
-        let parsed_datetime = NaiveDateTime::parse_from_str(&self.date, "%Y-%m-%dT%H:%M:%S%.3f")
-            .ok()
-            .map(|datetime| DateTime::<Utc>::from_utc(datetime, Utc));
-
-        let chicago_datetime = parsed_datetime.map(|datetime| datetime.with_timezone(&Chicago));
-
-        let formatted_str =
-            chicago_datetime.map(|datetime| datetime.format("%Y/%m/%d %H:%M:%S %Z").to_string());
-
-        if let Some(formatted_date) = formatted_str {
-            formatted_date
-        } else {
-            self.date.clone()
-        }
+    fn get_date(&self) -> String {
+        format_date(&self.date)
     }
 }
