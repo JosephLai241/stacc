@@ -8,7 +8,7 @@ use crate::models::chicago::{CleanedShotData, CleanedViolenceData};
 /// `HashMap` field is of type `HashMap<String, i32>`.
 pub trait SortableStruct {
     /// Sort all HashMaps in this struct of type `HashMap<String, i32>` by its value (descending).
-    fn sort_hashmaps(&mut self) {}
+    fn sort_hashmaps(&mut self);
 
     /// The sorting algorithm for sorting a single `HashMap<String, i32>` in descending order.
     fn sort_single_hashmap(
