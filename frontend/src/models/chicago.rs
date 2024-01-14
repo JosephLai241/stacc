@@ -29,16 +29,6 @@ impl Default for ChicagoMapData {
     }
 }
 
-/// This trait enables a struct to sort all of its `HashMap` fields in descending order assuming its
-/// `HashMap` field is of type `HashMap<String, i32>`.
-pub trait SortableStruct {
-    /// Sort all HashMaps in this struct of type `HashMap<String, i32>` by its value (descending).
-    fn sort_hashmaps(&mut self) {}
-
-    /// The sorting algorithm for sorting a single `HashMap<String, i32>` in descending order.
-    fn sort_single_hashmap(&mut self) {}
-}
-
 /// Contains cleaned/summarized data returned from the Shotspotter API.
 #[derive(Debug)]
 pub struct CleanedShotData {
@@ -336,7 +326,7 @@ impl ViolenceData {
     }
 
     /// Build the gunshot injury row.
-    pub fn build_gunshot_injury_row(
+    fn build_gunshot_injury_row(
         &self,
         document: &Document,
     ) -> Result<HtmlTableRowElement, StaccError> {
