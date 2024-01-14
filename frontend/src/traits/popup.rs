@@ -107,6 +107,7 @@ impl Popup for ShotData {
     ) -> Result<(), StaccError> {
         let header = document.create_element("h5")?;
         header.set_inner_html(&self.incident_type_description);
+
         popup_content.append_child(&header)?;
 
         Ok(())
@@ -123,6 +124,7 @@ impl Popup for ShotData {
             "{} | {} {}",
             timestamp, self.community_area, self.zip_code
         ));
+
         popup_content.append_child(&meta_subtitle)?;
 
         Ok(())
@@ -217,6 +219,7 @@ impl Popup for ViolenceData {
 
         let header = document.create_element("h5")?;
         header.set_inner_html(&crime_description);
+
         popup_content.append_child(&header)?;
 
         Ok(())
@@ -233,6 +236,7 @@ impl Popup for ViolenceData {
             "{} | {} {}",
             timestamp, self.community_area, self.zip_code
         ));
+
         popup_content.append_child(&meta_subtitle)?;
 
         Ok(())
