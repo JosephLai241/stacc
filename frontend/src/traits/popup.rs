@@ -18,7 +18,25 @@ use crate::{
 /// constructing a `JsValue`.
 pub trait Popup {
     /// Neatly display the data found in the struct in a popup.
-    fn into_popup(&self) -> Result<JsValue, StaccError>;
+    fn into_popup(&self) -> Result<JsValue, StaccError> {
+        let hash_id = self.generate_id();
+        let timestamp = self.format_date();
+
+        let document = gloo_utils::document();
+
+        let popup = document.create_element("div")?;
+        popup.set_id(&format!("shot-data-{hash_id}-popup"));
+
+        let popup_content = document.create_element("div")?;
+
+        self.create_popup_header(&document, &popup_content)?;
+        self.create_metadata_subtitle(&document, &popup_content, timestamp)?;
+        self.create_info_table(&document, &popup_content)?;
+
+        popup.append_child(&popup_content)?;
+
+        Ok(JsValue::from(popup))
+    }
 
     /// Create the header for the popup.
     fn create_popup_header(
@@ -80,26 +98,6 @@ pub trait Popup {
 }
 
 impl Popup for ShotData {
-    fn into_popup(&self) -> Result<JsValue, StaccError> {
-        let hash_id = self.generate_id();
-        let timestamp = self.format_date();
-
-        let document = gloo_utils::document();
-
-        let popup = document.create_element("div")?;
-        popup.set_id(&format!("shot-data-{hash_id}-popup"));
-
-        let popup_content = document.create_element("div")?;
-
-        self.create_popup_header(&document, &popup_content)?;
-        self.create_metadata_subtitle(&document, &popup_content, timestamp)?;
-        self.create_info_table(&document, &popup_content)?;
-
-        popup.append_child(&popup_content)?;
-
-        Ok(JsValue::from(popup))
-    }
-
     fn create_popup_header(
         &self,
         document: &Document,
@@ -190,26 +188,6 @@ impl Popup for ShotData {
 }
 
 impl Popup for ViolenceData {
-    fn into_popup(&self) -> Result<JsValue, StaccError> {
-        let hash_id = self.generate_id();
-        let timestamp = self.format_date();
-
-        let document = gloo_utils::document();
-
-        let popup = document.create_element("div")?;
-        popup.set_id(&format!("shot-data-{hash_id}-popup"));
-
-        let popup_content = document.create_element("div")?;
-
-        self.create_popup_header(&document, &popup_content)?;
-        self.create_metadata_subtitle(&document, &popup_content, timestamp)?;
-        self.create_info_table(&document, &popup_content)?;
-
-        popup.append_child(&popup_content)?;
-
-        Ok(JsValue::from(popup))
-    }
-
     fn create_popup_header(
         &self,
         document: &Document,
