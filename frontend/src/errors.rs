@@ -15,6 +15,10 @@ pub enum StaccError {
     #[error("HtmlTableElement error: {0:#?}")]
     HtmlTableElementError(HtmlTableElement),
 
+    /// Attempted to access an invalid `HashMap`.
+    #[error("Attempted to access an invalid HashMap: {0}")]
+    InvalidHashMapError(String),
+
     /// Something fucked up while interacting with `JsValue`s.
     #[error("JsValue error: {0:#?}")]
     JsValueError(JsValue),
