@@ -30,6 +30,8 @@ pub struct CleanedShotData {
     pub sorted_blocks: HashMap<String, i32>,
     /// Most to least common community areas in which shots were detected (`ShotData.community_area`).
     pub sorted_community_areas: HashMap<String, i32>,
+    /// Most to least common dates of occurrence (formatted date extracted from `ShotData.date`).
+    pub sorted_dates: HashMap<String, i32>,
     /// Most to least common incident types (`ShotData.incident_type_description`).
     pub sorted_incident_types: HashMap<String, i32>,
     /// Most to least common number of rounds fired (`ShotData.rounds`).
@@ -46,6 +48,7 @@ impl CleanedShotData {
         Self {
             sorted_blocks: HashMap::new(),
             sorted_community_areas: HashMap::new(),
+            sorted_dates: HashMap::new(),
             sorted_incident_types: HashMap::new(),
             sorted_rounds: HashMap::new(),
             sorted_zip_codes: HashMap::new(),
@@ -61,6 +64,9 @@ pub struct CleanedViolenceData {
     pub sorted_ages: HashMap<String, i32>,
     /// Most to least common community areas (`ViolenceData.community_area`).
     pub sorted_community_areas: HashMap<String, i32>,
+    /// Most to least common dates of occurrence (formatted date extracted from
+    /// `ViolenceData.community_area`).
+    pub sorted_dates: HashMap<String, i32>,
     /// Count of yes or no gun injuries (`ViolenceData.gunshot_injury_i`).
     pub sorted_gun_injury_count: HashMap<String, i32>,
     /// Most to least common incident types. The keys correspond to the value returned from the
@@ -85,6 +91,7 @@ impl CleanedViolenceData {
         Self {
             sorted_ages: HashMap::new(),
             sorted_community_areas: HashMap::new(),
+            sorted_dates: HashMap::new(),
             sorted_gun_injury_count: HashMap::new(),
             sorted_incident_types: HashMap::new(),
             sorted_location_descriptions: HashMap::new(),
