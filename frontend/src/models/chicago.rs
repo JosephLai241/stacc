@@ -1,12 +1,10 @@
 //! Contains structs for deserializing responses returned from the Chicago API.
 
-use chrono::{DateTime, NaiveDateTime, Utc};
-use chrono_tz::America::Chicago;
-use gloo_utils::document;
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
-use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen::JsCast;
 use web_sys::{
     Document, Element, HtmlElement, HtmlTableCellElement, HtmlTableElement, HtmlTableRowElement,
 };
@@ -31,18 +29,87 @@ impl Default for ChicagoMapData {
     }
 }
 
-/// This trait enables the data for a given struct to be converted into an HTML popup by
-/// constructing a `JsValue`.
-pub trait Popup {
-    /// Neatly display the data found in the struct in a popup.
-    fn into_popup(&self) -> Result<JsValue, StaccError>;
+/// This trait enables a struct to sort all of its `HashMap` fields in descending order assuming its
+/// `HashMap` field is of type `HashMap<String, i32>`.
+pub trait SortableStruct {
+    /// Sort all HashMaps in this struct of type `HashMap<String, i32>` by its value (descending).
+    fn sort_hashmaps(&mut self) {}
 
-    /// Generate a SHA256 ID for this particular struct. This ID is referenced when constructing a
-    /// popup HTML element by referencing this value in the element's `id` attribute.
-    fn generate_id(&self) -> String;
+    /// The sorting algorithm for sorting a single `HashMap<String, i32>` in descending order.
+    fn sort_single_hashmap(&mut self) {}
+}
 
-    /// Format the date to a more human-readable format.
-    fn format_date(&self) -> String;
+/// Contains cleaned/summarized data returned from the Shotspotter API.
+#[derive(Debug)]
+pub struct CleanedShotData {
+    /// Most to least common blocks on which shots were detected (`ShotData.block`).
+    pub sorted_blocks: HashMap<String, i32>,
+    /// Most to least common community areas in which shots were detected (`ShotData.community_area`).
+    pub sorted_community_areas: HashMap<String, i32>,
+    /// Most to least common incident types (`ShotData.incident_type_description`).
+    pub sorted_incident_types: HashMap<String, i32>,
+    /// Most to least common number of rounds fired (`ShotData.rounds`).
+    pub sorted_rounds: HashMap<String, i32>,
+    /// Most to least common zip codes in which shots were detected (`ShotData.zip_code`).
+    pub sorted_zip_codes: HashMap<String, i32>,
+    /// The earliest to latest dates that have been plotted.
+    pub time_range: (String, String),
+}
+
+impl CleanedShotData {
+    /// Create a new instance of `CleanedShotData`.
+    pub fn new() -> Self {
+        Self {
+            sorted_blocks: HashMap::new(),
+            sorted_community_areas: HashMap::new(),
+            sorted_incident_types: HashMap::new(),
+            sorted_rounds: HashMap::new(),
+            sorted_zip_codes: HashMap::new(),
+            time_range: ("".to_string(), "".to_string()),
+        }
+    }
+}
+
+/// Contains cleaned/summarized data returned from the violence data.
+#[derive(Debug)]
+pub struct CleanedViolenceData {
+    /// Most to least common age ranges (`ViolenceData.age`).
+    pub sorted_ages: HashMap<String, i32>,
+    /// Most to least common community areas (`ViolenceData.community_area`).
+    pub sorted_community_areas: HashMap<String, i32>,
+    /// Count of yes or no gun injuries (`ViolenceData.gunshot_injury_i`).
+    pub sorted_gun_injury_count: HashMap<String, i32>,
+    /// Most to least common incident types. The keys correspond to the value returned from the
+    /// match statement which matches the UCR code to its description
+    /// (`ViolenceData.incident_iucr_cd`).
+    pub sorted_incident_types: HashMap<String, i32>,
+    /// Most to least common location descriptions (`ViolenceData.location_description`).
+    pub sorted_location_descriptions: HashMap<String, i32>,
+    /// Most to least common victim races (`ViolenceData.race`).
+    pub sorted_victim_races: HashMap<String, i32>,
+    /// Most to least common victim sexes (`ViolenceData.sex`).
+    pub sorted_victim_sexes: HashMap<String, i32>,
+    /// Most to least common zip codes (`ViolenceData.zip_code`).
+    pub sorted_zip_codes: HashMap<String, i32>,
+    /// The earliest to latest dates that have been plotted.
+    pub time_range: (String, String),
+}
+
+impl CleanedViolenceData {
+    /// Create a new instance of `CleanedViolenceData`.
+    pub fn new() -> Self {
+        Self {
+            sorted_ages: HashMap::new(),
+            sorted_community_areas: HashMap::new(),
+            sorted_gun_injury_count: HashMap::new(),
+            sorted_incident_types: HashMap::new(),
+            sorted_location_descriptions: HashMap::new(),
+            sorted_victim_races: HashMap::new(),
+            sorted_victim_sexes: HashMap::new(),
+            sorted_zip_codes: HashMap::new(),
+            time_range: ("".to_string(), "".to_string()),
+        }
+    }
 }
 
 /// Holds the fields contained in the `location` key.
@@ -74,65 +141,9 @@ pub struct ShotData {
     pub zip_code: String,
 }
 
-impl Popup for ShotData {
-    fn into_popup(&self) -> Result<JsValue, StaccError> {
-        let hash_id = self.generate_id();
-        let timestamp = self.format_date();
-
-        let document = gloo_utils::document();
-
-        let popup = document.create_element("div")?;
-        popup.set_id(&format!("shot-data-{hash_id}-popup"));
-
-        let popup_content = document.create_element("div")?;
-
-        self.create_popup_header(&document, &popup_content)?;
-        self.create_metadata_subtitle(&document, &popup_content, timestamp)?;
-        self.create_info_table(&document, &popup_content)?;
-
-        popup.append_child(&popup_content)?;
-
-        Ok(JsValue::from(popup))
-    }
-
-    fn generate_id(&self) -> String {
-        let mut hash_string = self.block.to_string();
-        hash_string.push_str(&self.community_area);
-        hash_string.push_str(&self.date);
-        hash_string.push_str(&self.incident_type_description);
-        hash_string.push_str(&format!("{:?}", self.location));
-        hash_string.push_str(&self.rounds);
-        hash_string.push_str(&self.zip_code);
-
-        let mut hasher = Sha256::new();
-        hasher.update(hash_string.as_bytes());
-
-        let hash_result = hasher.finalize();
-
-        hex::encode(hash_result)
-    }
-
-    fn format_date(&self) -> String {
-        let parsed_datetime = NaiveDateTime::parse_from_str(&self.date, "%Y-%m-%dT%H:%M:%S%.3f")
-            .ok()
-            .map(|datetime| DateTime::<Utc>::from_utc(datetime, Utc));
-
-        let chicago_datetime = parsed_datetime.map(|datetime| datetime.with_timezone(&Chicago));
-
-        let formatted_str =
-            chicago_datetime.map(|datetime| datetime.format("%Y/%m/%d %H:%M:%S %Z").to_string());
-
-        if let Some(formatted_date) = formatted_str {
-            formatted_date
-        } else {
-            self.date.clone()
-        }
-    }
-}
-
 impl ShotData {
     /// Create the header for the popup.
-    fn create_popup_header(
+    pub fn create_popup_header(
         &self,
         document: &Document,
         popup_content: &Element,
@@ -145,7 +156,7 @@ impl ShotData {
     }
 
     /// Create the metadata subtitle/secondary header for the popup.
-    fn create_metadata_subtitle(
+    pub fn create_metadata_subtitle(
         &self,
         document: &Document,
         popup_content: &Element,
@@ -163,7 +174,7 @@ impl ShotData {
 
     /// Create the info table containing the block on which the shots were detected, as well as the
     /// number of rounds detected if more than one gunshot was detected.
-    fn create_info_table(
+    pub fn create_info_table(
         &self,
         document: &Document,
         popup_content: &Element,
@@ -260,72 +271,9 @@ pub struct ViolenceData {
     pub zip_code: String,
 }
 
-impl Popup for ViolenceData {
-    fn into_popup(&self) -> Result<JsValue, StaccError> {
-        let hash_id = self.generate_id();
-        let timestamp = self.format_date();
-        let crime_description = self.get_crime_description();
-
-        let document = gloo_utils::document();
-
-        let popup = document.create_element("div")?;
-        popup.set_id(&format!("shot-data-{hash_id}-popup"));
-
-        let popup_content = document.create_element("div")?;
-
-        self.create_popup_header(crime_description, &document, &popup_content)?;
-        self.create_metadata_subtitle(&document, &popup_content, timestamp)?;
-        self.create_info_table(&document, &popup_content)?;
-
-        popup.append_child(&popup_content)?;
-
-        Ok(JsValue::from(popup))
-    }
-
-    fn generate_id(&self) -> String {
-        let mut hash_string = self.age.to_string();
-        hash_string.push_str(&self.community_area);
-        hash_string.push_str(&self.date);
-        hash_string.push_str(&self.gunshot_injury_i);
-        hash_string.push_str(&self.incident_iucr_cd);
-        hash_string.push_str(&self.incident_primary);
-        hash_string.push_str(&format!("{:?}", self.location));
-        hash_string.push_str(&self.location_description);
-        hash_string.push_str(&self.race);
-        hash_string.push_str(&self.sex);
-        hash_string.push_str(&self.victimization_fbi_cd);
-        hash_string.push_str(&self.victimization_fbi_descr);
-        hash_string.push_str(&self.zip_code);
-
-        let mut hasher = Sha256::new();
-        hasher.update(hash_string.as_bytes());
-
-        let hash_result = hasher.finalize();
-
-        hex::encode(hash_result)
-    }
-
-    fn format_date(&self) -> String {
-        let parsed_datetime = NaiveDateTime::parse_from_str(&self.date, "%Y-%m-%dT%H:%M:%S%.3f")
-            .ok()
-            .map(|datetime| DateTime::<Utc>::from_utc(datetime, Utc));
-
-        let chicago_datetime = parsed_datetime.map(|datetime| datetime.with_timezone(&Chicago));
-
-        let formatted_str =
-            chicago_datetime.map(|datetime| datetime.format("%Y/%m/%d %H:%M:%S %Z").to_string());
-
-        if let Some(formatted_date) = formatted_str {
-            formatted_date
-        } else {
-            self.date.clone()
-        }
-    }
-}
-
 impl ViolenceData {
     /// Create the header for the popup.
-    fn create_popup_header(
+    pub fn create_popup_header(
         &self,
         crime_description: String,
         document: &Document,
@@ -339,7 +287,7 @@ impl ViolenceData {
     }
 
     /// Create the metadata subtitle/secondary header for the popup.
-    fn create_metadata_subtitle(
+    pub fn create_metadata_subtitle(
         &self,
         document: &Document,
         popup_content: &Element,
@@ -357,7 +305,7 @@ impl ViolenceData {
 
     /// Create the info table containing the block on which the shots were detected, as well as the
     /// number of rounds detected if more than one gunshot was detected.
-    fn create_info_table(
+    pub fn create_info_table(
         &self,
         document: &Document,
         popup_content: &Element,
@@ -388,7 +336,7 @@ impl ViolenceData {
     }
 
     /// Build the gunshot injury row.
-    fn build_gunshot_injury_row(
+    pub fn build_gunshot_injury_row(
         &self,
         document: &Document,
     ) -> Result<HtmlTableRowElement, StaccError> {
@@ -441,7 +389,7 @@ impl ViolenceData {
         Ok(location_description_row)
     }
 
-    /// Build the race row.
+    /// Build the victim race row.
     fn build_race_row(&self, document: &Document) -> Result<HtmlTableRowElement, StaccError> {
         let race_row = document
             .create_element("tr")?
@@ -465,7 +413,7 @@ impl ViolenceData {
         Ok(race_row)
     }
 
-    /// Build the age row.
+    /// Build the victim age row.
     fn build_age_row(&self, document: &Document) -> Result<HtmlTableRowElement, StaccError> {
         let age_row = document
             .create_element("tr")?
@@ -489,7 +437,7 @@ impl ViolenceData {
         Ok(age_row)
     }
 
-    /// Build the sex row.
+    /// Build the victim sex row.
     fn build_sex_row(&self, document: &Document) -> Result<HtmlTableRowElement, StaccError> {
         let sex_row = document
             .create_element("tr")?
@@ -518,7 +466,7 @@ impl ViolenceData {
     ///
     /// Holy fucking shit Vim/Neovim's macros saved me so much fucking time. 🅱️esus 🅱️UCCing 🅱️hrist
     /// Neovim is the best.
-    fn get_crime_description(&self) -> String {
+    pub fn get_crime_description(&self) -> String {
         match self.incident_iucr_cd.as_str() {
             "0110" => "HOMICIDE FIRST DEGREE MURDER".to_string(),
             "0130" => "HOMICIDE SECOND DEGREE MURDER".to_string(),
