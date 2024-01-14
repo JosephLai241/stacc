@@ -14,6 +14,7 @@ mod errors;
 mod models;
 mod pages;
 mod router;
+mod traits;
 mod utils;
 
 lazy_static! {
