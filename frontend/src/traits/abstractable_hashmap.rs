@@ -22,7 +22,6 @@ impl AbstractableHashMap for CleanedShotData {
         let hashmap = match hashmap_name {
             "sorted_blocks" => Ok(&mut self.sorted_blocks),
             "sorted_community_areas" => Ok(&mut self.sorted_community_areas),
-            "sorted_dates" => Ok(&mut self.sorted_dates),
             "sorted_incident_types" => Ok(&mut self.sorted_incident_types),
             "sorted_rounds" => Ok(&mut self.sorted_rounds),
             "sorted_zip_codes" => Ok(&mut self.sorted_zip_codes),
@@ -39,7 +38,6 @@ impl AbstractableHashMap for CleanedShotData {
         let hashmap = match hashmap_name {
             "sorted_blocks" => Ok(&self.sorted_blocks),
             "sorted_community_areas" => Ok(&self.sorted_community_areas),
-            "sorted_dates" => Ok(&self.sorted_dates),
             "sorted_incident_types" => Ok(&self.sorted_incident_types),
             "sorted_rounds" => Ok(&self.sorted_rounds),
             "sorted_zip_codes" => Ok(&self.sorted_zip_codes),
@@ -62,7 +60,6 @@ impl AbstractableHashMap for CleanedViolenceData {
         let hashmap = match hashmap_name {
             "sorted_ages" => Ok(&mut self.sorted_ages),
             "sorted_community_areas" => Ok(&mut self.sorted_community_areas),
-            "sorted_dates" => Ok(&mut self.sorted_dates),
             "sorted_gun_injury_count" => Ok(&mut self.sorted_gun_injury_count),
             "sorted_incident_types" => Ok(&mut self.sorted_incident_types),
             "sorted_location_descriptions" => Ok(&mut self.sorted_location_descriptions),
@@ -82,7 +79,6 @@ impl AbstractableHashMap for CleanedViolenceData {
         let hashmap = match hashmap_name {
             "sorted_ages" => Ok(&self.sorted_ages),
             "sorted_community_areas" => Ok(&self.sorted_community_areas),
-            "sorted_dates" => Ok(&self.sorted_dates),
             "sorted_gun_injury_count" => Ok(&self.sorted_gun_injury_count),
             "sorted_incident_types" => Ok(&self.sorted_incident_types),
             "sorted_location_descriptions" => Ok(&self.sorted_location_descriptions),
