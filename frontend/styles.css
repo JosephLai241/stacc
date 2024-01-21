@@ -486,6 +486,90 @@ code {
   }
 }
 
+/* Style for the data table */
+.data-table {
+  border: solid 1px #7d310a;
+  display: block;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  max-height: calc(30px * 10);
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* Style for the data table's header row cells. */
+.data-table-header-cell {
+  background: #7d310a;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  /*position: sticky;*/
+  /*top: 0;*/
+  width: 50%;
+}
+
+/* Style for the data table's header row. */
+.data-table-header-row {
+  display: flex;
+  position: sticky;
+  top: 0;
+}
+
+/* Style for left side cells in the data table. */
+.data-table-left-cell {
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 50%;
+}
+
+/* Style for right side cells in the data table. */
+.data-table-right-cell-left-border {
+  border-left: solid 1px #7d310a;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 50%;
+}
+
+/* Style for each row in the data table. */
+.data-table-row {
+  display: flex;
+  width: 100%;
+}
+
+/* Style for the date ranges displayed above the violence map. */
+.date-range-container {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* Style for the date range box. */
+.date-range-split-box {
+  display: flex;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* Style for the left box/label. */
+.date-range-label-box {
+  background-color: #7d310a;
+  color: white;
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Style for the right box/value. */
+.date-range-value-box {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+  border: 1px solid #7d310a;
+  color: #7d310a;
+  flex: 2;
+  padding: 10px;
+  text-align: center;
+}
+
 /* Style for the error text. */
 .error-text {
   animation: textShadow 1.6s infinite;
@@ -546,14 +630,23 @@ code {
 
 .leaflet-popup-content-wrapper {
   background-color: #0b0d10;
-  border: #b7410e solid 1px;
+  border: #7d310a solid 1px;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
   color: #808080;
 }
 
 .leaflet-popup-tip {
   background-color: #0b0d10;
-  border: #b7410e solid 1px;
+  border: #7d310a solid 1px;
+}
+
+/* The style for the top right map control container. */
+.leaflet-control-container .leaflet-right {
+  display: flex;
+  flex-direction: column;
+  font-size: smaller;
+  padding: 10px;
+  width: 275px;
 }
 
 /* A half-screen (left-oriented) container. */
@@ -563,14 +656,42 @@ code {
 
 /* Set the height of the Leaflet map (otherwise it does not show up). */
 .map {
-  height: 60vh;
+  border: 1px solid #7d310a;
+  height: 90vh;
 }
 
 /* Set the height of the Leaflet map (otherwise it does not show up). */
 .map-container {
-  border: 1px solid #b7410e;
-  height: 60vh;
+  height: 90vh;
   margin-bottom: 1em;
+}
+
+/* Set the style for each control group for the map. */
+.map-control {
+  display: flex;
+  width: 100%;
+}
+
+/* Set the style for the checkbox in the `map-control` container */
+.map-control-checkbox {
+  align-items: center;
+  background-color: #7d310a;
+  box-sizing: border-box;
+  color: white;
+  display: flex;
+  flex: 0;
+  justify-content: center;
+  padding: 20px;
+}
+
+.map-control-label {
+  border: 2px solid #7d310a;
+  box-sizing: border-box;
+  color: #7d310a;
+  cursor: pointer;
+  flex: 1;
+  padding: 20px;
+  text-align: center;
 }
 
 /* The styling for the map markers' popups. */
@@ -647,6 +768,34 @@ code {
   transform: translateY(-6px);
 }
 
+/* The style for the container that will hold multiple different tables for
+ * Shotspotter and violence data. */
+.tables-container {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+  border: 1px solid #7d310a;
+  margin-bottom: 1em;
+  padding: 10px;
+}
+
+/* The style for the container that will hold the header/title of the group of
+ * tables wrapped in a `tables-container` `<div>`. */
+.tables-container-header-container {
+  align-items: center;
+  background: #7d310a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Style for the extra T H I C C line divider in the tables container. */
+.tables-container-thicc-separator {
+  border-top: 10px solid #7d310a;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 /* Sexy style for the site's title. */
 .title-text {
   animation:
@@ -708,6 +857,16 @@ code {
   .blog-post {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .date-range-split-box {
+    flex-direction: column;
+  }
+
+  .date-range-label-box,
+  .date-range-value-box {
+    flex: 1;
+    font-size: smaller;
   }
 
   .left-half-container {
