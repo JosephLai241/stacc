@@ -466,7 +466,13 @@ fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode),
     } else {
         error!("FAILED TO GET SHOTSPOTTER AND VHNFS DATA FROM SHOTSPOTTER_DATA STRUCT");
 
-        // TODO: RETURN SOME SORT OF ERROR HTML HERE INSTEAD OF JUST LOGGING THE ERROR.
+        let error_div = gloo_utils::document()
+            .create_element("div")?
+            .dyn_into::<HtmlElement>()?;
+        error_div.set_inner_html("<b>no shotspotter or violence data available!</b>");
+
+        let _ = date_container.append_child(&error_div);
+        let _ = tables_container.append_child(&error_div);
     }
 
     let map_node: &Node = &date_container.clone().into();
