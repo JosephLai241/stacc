@@ -2,7 +2,7 @@
 
 use std::env;
 
-use gloo_console::{error, log};
+use gloo_console::error;
 use gloo_net::http::Request;
 use lazy_static::lazy_static;
 use leaflet::{
@@ -21,7 +21,7 @@ use crate::{
         response::Response,
     },
     pages::utils::Loading,
-    traits::popup::Popup as PopupTrait,
+    traits::{abstractable_hashmap::AbstractableHashMap, popup::Popup as PopupTrait},
     utils::{
         background,
         date::format_date,
@@ -30,7 +30,7 @@ use crate::{
     FAVICON_GIF,
 };
 
-use super::utils;
+use super::utils::{self, create_table_from_data};
 
 lazy_static! {
     /// City of Chicago data use disclaimer message. It is required to include this disclaimer on
@@ -43,15 +43,16 @@ lazy_static! {
     static ref LEAFLET_ATTRIBUTION: &'static str = "<a href=\"https://www.jawg.io?utm_medium=map&utm_source=attribution\" target=\"_blank\">&copy; Jawg</a> - <a href=\"https://www.openstreetmap.org?utm_medium=map-attribution&utm_source=jawg\" target=\"_blank\">&copy; OpenStreetMap</a>&nbsp;contributors";
     /// The URL template for the Leaflet map.
     static ref LEAFLET_URL_TEMPLATE: String = {
-        let leaflet_access_token = env::var("LEAFLET_ACCESS_TOKEN");
-        if let Ok(access_token) = leaflet_access_token {
-            let mut url_template = "https://tile.jawg.io/f6a80ab7-56ec-4b34-bc1c-3caec4328a77/{z}/{x}/{y}{r}.png?access-token=".to_string();
-            url_template.push_str(&access_token);
+        let leaflet_access_token: &'static str = env!(
+            "LEAFLET_ACCESS_TOKEN",
+            "THE LEAFLET_ACCESS_TOKEN IS NOT SET IN THE CURRENT ENVIRONMENT! CANNOT BUILD FRONTEND."
+        );
 
-            url_template
-        } else {
-            "????".to_string()
-        }
+        let mut url_template =
+            "https://tile.jawg.io/f6a80ab7-56ec-4b34-bc1c-3caec4328a77/{z}/{x}/{y}{r}.png?access-token=".to_string();
+        url_template.push_str(leaflet_access_token);
+
+        url_template
     };
 
     /// The icon for mapping gunshot or firecracker alerts.
@@ -86,7 +87,7 @@ pub fn violence() -> Html {
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
-                        "Violence in Chicago visualized".to_string(),
+                        "Visualizing violence in Chicago".to_string(),
                     ))
                     .unwrap_or_else(|error| error!(error.to_string()));
                     open_graph::set_open_graph_tag(OpenGraphTag::ImageLink(
@@ -153,7 +154,7 @@ pub fn violence() -> Html {
         .unwrap_or(&Ok(ChicagoMapData::default()))
         .to_owned();
 
-    let map = match chiraq_response {
+    let (dates, map, tables) = match chiraq_response {
         Ok(chicago_map_data) => {
             let shotspotter_data_array = chicago_map_data.shotspotter_data.as_array();
             let violence_data_array = chicago_map_data.violence_data.as_array();
@@ -162,49 +163,104 @@ pub fn violence() -> Html {
                 (shotspotter_data_array, violence_data_array)
             {
                 if !shotspotter_data.is_empty() && !violence_data.is_empty() {
-                    let map_html = render_map(chicago_map_data).unwrap_or_else(|error| {
-                        // TODO: UPDATE THIS TO DISPLAY SOMETHING ELSE INSTEAD.
-                        html! {
-                            <div>
-                              <h1>{ "FUCK!" }</h1>
-                              <h2>{ "Shit done fucked up." }</h2>
-                              <h3>{ format!("{error:#?}") }</h3>
-                            </div>
-                        }
-                    });
+                    let (date_html, map_html, chart_html) = render_map(chicago_map_data)
+                        .unwrap_or_else(|error| {
+                            (
+                                html! {
+                                    <div>
+                                        <h1>{ "FUCK!" }</h1>
+                                        <h2>{ "Shit done fucked up with the dates." }</h2>
+                                        <h3>{ format!("{error:#?}") }</h3>
+                                        </div>
+                                },
+                                html! {
+                                    <div>
+                                        <h1>{ "FUCK!" }</h1>
+                                        <h2>{ "Shit done fucked up with the map." }</h2>
+                                        <h3>{ format!("{error:#?}") }</h3>
+                                        </div>
+                                },
+                                html! {
+                                    <div>
+                                      <h1>{ "FUCK!" }</h1>
+                                      <h2>{ "Shit done fucked up with the charts." }</h2>
+                                      <h3>{ format!("{error:#?}") }</h3>
+                                    </div>
+                                },
+                            )
+                        });
 
-                    map_html
+                    (date_html, map_html, chart_html)
                 } else {
-                    html! {
-                        <Loading />
-                    }
+                    (
+                        html! {
+                            <Loading />
+                        },
+                        html! {
+                            <Loading />
+                        },
+                        html! {
+                            <Loading />
+                        },
+                    )
                 }
             } else {
-                // TODO: UPDATE THIS TO DISPLAY SOMETHING ELSE INSTEAD OF JUST THIS HEADER.
-                html! {
-                    <h1>{ "LOADING SHOTSPOTTER MAP..." }</h1>
-                }
+                (
+                    html! {
+                        <Loading />
+                    },
+                    html! {
+                        <Loading />
+                    },
+                    html! {
+                        <Loading />
+                    },
+                )
             }
         }
         Err(error) => {
-            // TODO: UPDATE THIS TO DISPLAY SOMETHING ELSE INSTEAD.
-            error!("CHICAGO_MAP_DATA IS ERROR!");
+            error!("FAILED TO GET CHIRAQ DATA FROM THE API!");
             error!(format!("{error:#?}"));
 
-            html! {
-                <div>
-                  <h1>{ "FUCK!" }</h1>
-                  <h2>{ "Shit done fucked up." }</h2>
-                  <h3>{ format!("{error:#?}") }</h3>
-                </div>
-            }
+            (
+                html! {
+                    <div>
+                      <h1>{ "FUCK!" }</h1>
+                      <h2>{ "Shit done fucked up with the dates." }</h2>
+                      <h3>{ format!("{error:#?}") }</h3>
+                    </div>
+                },
+                html! {
+                    <div>
+                      <h1>{ "FUCK!" }</h1>
+                      <h2>{ "Shit done fucked up with the map." }</h2>
+                      <h3>{ format!("{error:#?}") }</h3>
+                    </div>
+                },
+                html! {
+                    <div>
+                      <h1>{ "FUCK!" }</h1>
+                      <h2>{ "Shit done fucked up with the data charts." }</h2>
+                      <h3>{ format!("{error:#?}") }</h3>
+                    </div>
+                },
+            )
         }
     };
 
     let page_view = html! {
         <div class="fade-in-slide-down">
+          <div>
+            { render_about_section() }
+          </div>
+          <div>
+            { dates }
+          </div>
           <div class="map-container component-container">
             { map }
+          </div>
+          <div>
+            { tables }
           </div>
           <div>
             <small>
@@ -231,10 +287,6 @@ pub fn violence() -> Html {
                 </small>
               </small>
             </small>
-          </div>
-          <div>
-            { render_about_section() }
-            { render_charts() }
           </div>
         </div>
     };
@@ -270,90 +322,200 @@ pub fn violence() -> Html {
 fn render_about_section() -> Html {
     html! {
         <div>
-          <h3>{ "mapping chicago violence" }</h3>
+          <h3>{ "chicago violence" }</h3>
           <p>{ "This map marks locations where Shotspotter alerts as well as victims of homicides and non-fatal shootings have been recorded." }</p>
         </div>
     }
 }
 
-/// Render miscellaneous charts using `Chart.js` that make the displayed data more digestable.
-fn render_charts() -> Html {
-    html! {
-        <div>
-          <p>{ "CHART DATA GOES HERE..." }</p>
-          <p>{ "Display the following:" }</p>
-          <p>{ "- Ranking of top 10 most common incidents" }</p>
-          <p>{ "- Most common victims' race pie chart" }</p>
-          <p>{ "- Most common sex pie chart" }</p>
-          <p>{ "- Gunshot injury (yes or no) pie chart" }</p>
-          <p>{ "- Top 10 most common community areas/zip codes pie chart" }</p>
-        </div>
+/// Render the Shotspotter and violence map via Leaflet.
+fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode), StaccError> {
+    let date_container = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    date_container.set_class_name("date-range-container");
+
+    let map_container = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    map_container.set_class_name("map");
+
+    let tables_container = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    tables_container.set_class_name("tables-container");
+
+    let map = create_map(&map_container);
+
+    if let (Some(shotspotter_data), Some(vhnfs_data)) = (
+        chicago_map_data.shotspotter_data.as_array(),
+        chicago_map_data.violence_data.as_array(),
+    ) {
+        if !shotspotter_data.is_empty() {
+            let cleaned_shot_data = plot_shotspotter_data(&map, shotspotter_data)?;
+
+            create_date_range_labels(
+                &date_container,
+                "shotspotter data range",
+                &cleaned_shot_data.time_range,
+            )?;
+
+            let tables = gloo_utils::document()
+                .create_element("div")?
+                .dyn_into::<HtmlElement>()?;
+
+            let tables_header_container = gloo_utils::document()
+                .create_element("div")?
+                .dyn_into::<HtmlElement>()?;
+            tables_header_container.set_class_name("tables-container-header-container");
+            tables_header_container
+                .set_inner_html("<h4 style='margin: 0;'><b>shotspotter data</b></h4>");
+
+            let incident_types_table = create_table_from_data(
+                ("incident type", "occurrences"),
+                &cleaned_shot_data.to_vec("sorted_incident_types")?,
+            )?;
+            let blocks_table = create_table_from_data(
+                ("block", "occurrences"),
+                &cleaned_shot_data.to_vec("sorted_blocks")?,
+            )?;
+            let community_areas_table = create_table_from_data(
+                ("community area", "occurrences"),
+                &cleaned_shot_data.to_vec("sorted_community_areas")?,
+            )?;
+            let zip_codes_table = create_table_from_data(
+                ("zip code", "occurrences"),
+                &cleaned_shot_data.to_vec("sorted_zip_codes")?,
+            )?;
+
+            let _ = tables.append_child(&tables_header_container);
+            let _ = tables.append_child(&incident_types_table);
+            let _ = tables.append_child(&blocks_table);
+            let _ = tables.append_child(&community_areas_table);
+            let _ = tables.append_child(&zip_codes_table);
+
+            let _ = tables_container.append_child(&tables);
+        }
+
+        if !vhnfs_data.is_empty() {
+            let table_separator = gloo_utils::document()
+                .create_element("div")?
+                .dyn_into::<HtmlElement>()?;
+            table_separator.set_class_name("tables-container-thicc-separator");
+            let _ = tables_container.append_child(&table_separator);
+
+            let cleaned_violence_data = plot_violence_data(&map, vhnfs_data)?;
+
+            create_date_range_labels(
+                &date_container,
+                "violence data range",
+                &cleaned_violence_data.time_range,
+            )?;
+
+            let tables = gloo_utils::document()
+                .create_element("div")?
+                .dyn_into::<HtmlElement>()?;
+
+            let tables_header_container = gloo_utils::document()
+                .create_element("div")?
+                .dyn_into::<HtmlElement>()?;
+            tables_header_container.set_class_name("tables-container-header-container");
+            tables_header_container
+                .set_inner_html("<h4 style='margin: 0;'><b>violence data</b></h4>");
+
+            let incident_types_table = create_table_from_data(
+                ("incident type", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_incident_types")?,
+            )?;
+            let community_areas_table = create_table_from_data(
+                ("community area", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_community_areas")?,
+            )?;
+            let location_description_table = create_table_from_data(
+                ("location description", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_location_descriptions")?,
+            )?;
+            let victim_races_table = create_table_from_data(
+                ("victim race", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_victim_races")?,
+            )?;
+            let victim_sexes_table = create_table_from_data(
+                ("victim sex", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_victim_sexes")?,
+            )?;
+            let gun_injury_table = create_table_from_data(
+                ("gun injury?", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_gun_injury_count")?,
+            )?;
+            let zip_codes_table = create_table_from_data(
+                ("zip code", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_zip_codes")?,
+            )?;
+
+            let _ = tables.append_child(&tables_header_container);
+            let _ = tables.append_child(&incident_types_table);
+            let _ = tables.append_child(&location_description_table);
+            let _ = tables.append_child(&victim_races_table);
+            let _ = tables.append_child(&victim_sexes_table);
+            let _ = tables.append_child(&gun_injury_table);
+            let _ = tables.append_child(&community_areas_table);
+            let _ = tables.append_child(&zip_codes_table);
+
+            let _ = tables_container.append_child(&tables);
+        }
+    } else {
+        error!("FAILED TO GET SHOTSPOTTER AND VHNFS DATA FROM SHOTSPOTTER_DATA STRUCT");
+
+        // TODO: RETURN SOME SORT OF ERROR HTML HERE INSTEAD OF JUST LOGGING THE ERROR.
     }
+
+    let map_node: &Node = &date_container.clone().into();
+    let date_html = Html::VRef(map_node.clone());
+
+    let map_node: &Node = &map_container.clone().into();
+    let map_html = Html::VRef(map_node.clone());
+
+    let tables_node: &Node = &tables_container.clone().into();
+    let tables_html = Html::VRef(tables_node.clone());
+
+    Ok((date_html, map_html, tables_html))
 }
 
-/// Render the Shotspotter and violence map via Leaflet.
-fn render_map(chicago_map_data: ChicagoMapData) -> Result<VNode, Html> {
-    match gloo_utils::document().create_element("div") {
-        Ok(map_container) => match map_container.dyn_into::<HtmlElement>() {
-            Ok(container) => {
-                container.set_class_name("map");
+/// Create the date range labels for Shotspotter and violence data.
+fn create_date_range_labels(
+    date_container: &HtmlElement,
+    label: &str,
+    time_range: &(String, String),
+) -> Result<(), StaccError> {
+    let date_range_container = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    date_range_container.set_class_name("date-range-split-box");
 
-                let map = create_map(&container);
+    let date_label = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    date_label.set_class_name("date-range-label-box");
+    date_label.set_inner_html(&format!("<b>{label}</b>"));
 
-                if let (Some(shotspotter_data), Some(vhnfs_data)) = (
-                    chicago_map_data.shotspotter_data.as_array(),
-                    chicago_map_data.violence_data.as_array(),
-                ) {
-                    if !shotspotter_data.is_empty() {
-                        let cleaned_shot_data = plot_shotspotter_data(&map, shotspotter_data)?;
-                        // TODO: PLOT THE CLEANED SHOT DATA IN TABLES AND PIE CHARTS
-                    }
+    let date_value = gloo_utils::document()
+        .create_element("div")?
+        .dyn_into::<HtmlElement>()?;
+    date_value.set_class_name("date-range-value-box");
+    date_value.set_inner_html(&format!("{} − {}", time_range.0, time_range.1));
 
-                    if !vhnfs_data.is_empty() {
-                        let cleaned_violence_data = plot_violence_data(&map, vhnfs_data)?;
-                        // TODO: PLOT THE CLEANED SHOT DATA IN TABLES AND PIE CHARTS
-                    }
-                } else {
-                    error!("FAILED TO GET SHOTSPOTTER AND VHNFS DATA FROM SHOTSPOTTER_DATA STRUCT");
+    let _ = date_range_container.append_child(&date_label)?;
+    let _ = date_range_container.append_child(&date_value)?;
 
-                    // TODO: RETURN SOME SORT OF ERROR HTML HERE INSTEAD OF JUST LOGGING THE ERROR.
-                }
+    let _ = date_container.append_child(&date_range_container)?;
 
-                let node: &Node = &container.clone().into();
-                let map = Html::VRef(node.clone());
-
-                Ok(map)
-            }
-            Err(error) => {
-                error!("FAILED TO CREATE THE MAP CONTAINER ELEMENT!");
-                error!(&error);
-
-                Err(html! {
-                    <div>
-                      <h1>{ "FUCK" }</h1>
-                      <p>{ format!("{error:?}") }</p>
-                    </div>
-                })
-            }
-        },
-        Err(error) => {
-            error!("FAILED TO CREATE NEW DIV ELEMENT!");
-            error!(&error);
-
-            Err(html! {
-                <div>
-                  <h1>{ "FUCK" }</h1>
-                  <p>{ format!("{error:?}") }</p>
-                </div>
-            })
-        }
-    }
+    Ok(())
 }
 
 /// Create the map and set its attribution layer.
 fn create_map(container: &HtmlElement) -> Map {
     let map = Map::new_with_element(container, &MapOptions::default());
-    map.set_view(&LatLng::new(41.87708716842721, -87.62622819781514), 11.0);
+    map.set_view(&LatLng::new(41.87708716842721, -87.62622819781514), 10.7);
 
     let tile_layer_options = TileLayerOptions::new();
     tile_layer_options.set_attribution(JAWG_MAPS_ATTRIBUTION.to_string());
@@ -366,7 +528,7 @@ fn create_map(container: &HtmlElement) -> Map {
 /// Plot Shotspotter markers and their corresponding popups on the Leaflet map.
 fn plot_shotspotter_data(
     map: &Map,
-    shotspotter_data: &Vec<Value>,
+    shotspotter_data: &[Value],
 ) -> Result<CleanedShotData, StaccError> {
     let shotspotter_layer = LayerGroup::new();
 
@@ -375,60 +537,64 @@ fn plot_shotspotter_data(
 
     let mut cleaned_shot_data = CleanedShotData::new();
 
-    for shot in shotspotter_data.into_iter() {
+    for shot in shotspotter_data.iter() {
         let shot_data: Option<ShotData> = serde_json::from_value(shot.clone()).ok();
 
         if let Some(shot_data) = shot_data {
             let date = format_date(&shot_data.date);
 
-            if earliest_date.is_empty() {
+            if earliest_date.is_empty() || date < earliest_date {
                 earliest_date = date.clone();
-            } else if date < earliest_date {
-                earliest_date = date.clone();
-            }
+            } /* else if date < earliest_date {*/
+            /*earliest_date = date.clone();*/
+            /*}*/
 
-            if latest_date.is_empty() {
+            if latest_date.is_empty() || date > latest_date {
                 latest_date = date.clone();
-            } else if date > latest_date {
-                latest_date = date.clone();
-            }
+            } /*else if date > latest_date {*/
+            /*latest_date = date.clone();*/
+            /*}*/
 
             if let (Some(longitude), Some(latitude)) = (
                 shot_data.location.coordinates.first(),
                 shot_data.location.coordinates.last(),
             ) {
-                let marker_icon =
-                    if shot_data.incident_type_description.to_lowercase() == "multiple gunshots" {
-                        MULTIPLE_SHOTSPOTTER_MARKER_ICON.to_string()
-                    } else if shot_data.incident_type_description.to_lowercase()
-                        == "gunshot or firecracker"
-                    {
-                        GUNSHOT_OR_FIRECRACKER_ICON.to_string()
-                    } else {
-                        SINGLE_SHOTSPOTTER_MARKER_ICON.to_string()
-                    };
+                let incident_type_description = shot_data.incident_type_description.clone();
+
+                let marker_icon = if &incident_type_description.to_lowercase()
+                    == "multiple gunshots"
+                {
+                    MULTIPLE_SHOTSPOTTER_MARKER_ICON.to_string()
+                } else if &incident_type_description.to_lowercase() == "gunshot or firecracker" {
+                    GUNSHOT_OR_FIRECRACKER_ICON.to_string()
+                } else {
+                    SINGLE_SHOTSPOTTER_MARKER_ICON.to_string()
+                };
                 let icon = create_map_marker_icon(marker_icon);
                 let shot_marker = create_map_marker(
-                    "🔫".to_string(),
+                    if &incident_type_description.to_lowercase() == "gunshot or firecracker" {
+                        "🧨".to_string()
+                    } else {
+                        "🔫".to_string()
+                    },
                     &icon,
                     latitude,
                     longitude,
-                    "shots fired".to_string(),
+                    incident_type_description.clone().to_lowercase(),
                 );
 
                 shot_marker.add_to_layer_group(&shotspotter_layer);
 
-                if let Ok(popup_content) = shot_data.into_popup() {
+                if let Ok(popup_content) = shot_data.to_popup() {
                     let popup = create_marker_popup(&popup_content);
                     shot_marker.bind_popup(&popup);
                 }
             }
 
             cleaned_shot_data
-                .insert_or_increment("sorted_blocks", &shot_data.block.trim_end_matches(','))?;
+                .insert_or_increment("sorted_blocks", shot_data.block.trim_end_matches(','))?;
             cleaned_shot_data
                 .insert_or_increment("sorted_community_areas", &shot_data.community_area)?;
-            cleaned_shot_data.insert_or_increment("sorted_dates", &date)?;
             cleaned_shot_data.insert_or_increment(
                 "sorted_incident_types",
                 &shot_data.incident_type_description,
@@ -446,10 +612,7 @@ fn plot_shotspotter_data(
 }
 
 /// Plot violence markers and their corresponding popups on the Leaflet map.
-fn plot_violence_data(
-    map: &Map,
-    vhnfs_data: &Vec<Value>,
-) -> Result<CleanedViolenceData, StaccError> {
+fn plot_violence_data(map: &Map, vhnfs_data: &[Value]) -> Result<CleanedViolenceData, StaccError> {
     let violence_layer = LayerGroup::new();
 
     let mut earliest_date = "".to_string();
@@ -457,23 +620,23 @@ fn plot_violence_data(
 
     let mut cleaned_violence_data = CleanedViolenceData::new();
 
-    for violence in vhnfs_data.into_iter() {
+    for violence in vhnfs_data.iter() {
         let violence_data: Option<ViolenceData> = serde_json::from_value(violence.clone()).ok();
 
         if let Some(violence_data) = violence_data {
             let date = format_date(&violence_data.date);
 
-            if earliest_date.is_empty() {
+            if earliest_date.is_empty() || date < earliest_date {
                 earliest_date = date.clone();
-            } else if date < earliest_date {
-                earliest_date = date.clone();
-            }
+            } /* else if date < earliest_date {*/
+            /*earliest_date = date.clone();*/
+            /*}*/
 
-            if latest_date.is_empty() {
+            if latest_date.is_empty() || date > latest_date {
                 latest_date = date.clone();
-            } else if date > latest_date {
-                latest_date = date.clone();
-            }
+            } /* else if date > latest_date {*/
+            /*latest_date = date.clone();*/
+            /*}*/
 
             if let (Some(longitude), Some(latitude)) = (
                 violence_data.location.coordinates.first(),
@@ -490,7 +653,7 @@ fn plot_violence_data(
 
                 violence_marker.add_to_layer_group(&violence_layer);
 
-                if let Ok(popup_content) = violence_data.into_popup() {
+                if let Ok(popup_content) = violence_data.to_popup() {
                     let popup = create_marker_popup(&popup_content);
                     violence_marker.bind_popup(&popup);
                 }
@@ -499,7 +662,6 @@ fn plot_violence_data(
             cleaned_violence_data.insert_or_increment("sorted_ages", &violence_data.age)?;
             cleaned_violence_data
                 .insert_or_increment("sorted_community_areas", &violence_data.community_area)?;
-            cleaned_violence_data.insert_or_increment("sorted_dates", &date)?;
             cleaned_violence_data
                 .insert_or_increment("sorted_gun_injury_count", &violence_data.gunshot_injury_i)?;
             cleaned_violence_data.insert_or_increment(
@@ -518,7 +680,7 @@ fn plot_violence_data(
         }
     }
 
-    violence_layer.add_to(&map);
+    violence_layer.add_to(map);
 
     cleaned_violence_data.time_range = (earliest_date, latest_date);
 
@@ -531,9 +693,7 @@ fn create_map_marker_icon(icon_url: String) -> Icon {
     icon_options.set_icon_url(icon_url);
     icon_options.set_icon_size(Point::new(40.0, 40.0));
 
-    let icon = Icon::new(&icon_options);
-
-    icon
+    Icon::new(&icon_options)
 }
 
 /// Create a map marker from the given `Icon`, alternate icon, and coordinates.
@@ -549,9 +709,7 @@ fn create_map_marker(
     marker_options.set_icon(icon.clone());
     marker_options.set_title(title);
 
-    let map_marker = Marker::new_with_options(&LatLng::new(*latitude, *longitude), &marker_options);
-
-    map_marker
+    Marker::new_with_options(&LatLng::new(*latitude, *longitude), &marker_options)
 }
 
 /// Create the popup for the map marker.
