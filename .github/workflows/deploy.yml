@@ -46,6 +46,9 @@ jobs:
     needs: [changes, set-up-scp]
     if: ${{ needs.changes.outputs.frontend == 'true' }}
 
+    env:
+      LEAFLET_ACCESS_TOKEN: ${{ secrets.LEAFLET_ACCESS_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
