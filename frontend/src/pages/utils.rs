@@ -130,7 +130,7 @@ pub fn loading() -> Html {
 /// Create a table from the data in a given `Vec<(String, i32)>`.
 pub fn create_table_from_data(
     table_header: (&str, &str),
-    data: &Vec<(String, i32)>,
+    data: &[(String, i32)],
 ) -> Result<HtmlTableElement, StaccError> {
     let document = gloo_utils::document();
 
@@ -147,21 +147,21 @@ pub fn create_table_from_data(
     let key_header = document
         .create_element("th")?
         .dyn_into::<HtmlTableCellElement>()?;
-    key_header.set_inner_text(&table_header.0);
+    key_header.set_inner_text(table_header.0);
     key_header.set_class_name("data-table-header-cell");
 
     let value_header = document
         .create_element("th")?
         .dyn_into::<HtmlTableCellElement>()?;
-    value_header.set_inner_text(&table_header.1);
+    value_header.set_inner_text(table_header.1);
     value_header.set_class_name("data-table-header-cell");
 
-    header_row.append_child(&key_header);
-    header_row.append_child(&value_header);
+    let _ = header_row.append_child(&key_header);
+    let _ = header_row.append_child(&value_header);
 
-    table.append_child(&header_row);
+    let _ = table.append_child(&header_row);
 
-    for key_value in data.into_iter() {
+    for key_value in data.iter() {
         let row = document
             .create_element("tr")?
             .dyn_into::<HtmlTableRowElement>()?;
@@ -179,10 +179,10 @@ pub fn create_table_from_data(
         value.set_inner_text(&key_value.1.to_string());
         value.set_class_name("data-table-right-cell-left-border");
 
-        row.append_child(&key);
-        row.append_child(&value);
+        let _ = row.append_child(&key);
+        let _ = row.append_child(&value);
 
-        table.append_child(&row);
+        let _ = table.append_child(&row);
     }
 
     Ok(table)

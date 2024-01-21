@@ -17,7 +17,7 @@ use crate::{
 /// constructing a `JsValue`.
 pub trait Popup {
     /// Neatly display the data found in the struct in a popup.
-    fn into_popup(&self) -> Result<JsValue, StaccError> {
+    fn to_popup(&self) -> Result<JsValue, StaccError> {
         let hash_id = self.generate_id();
         let timestamp = self.get_date();
 
@@ -80,7 +80,7 @@ pub trait Popup {
             .create_element("td")?
             .dyn_into::<HtmlTableCellElement>()?;
         value.set_class_name("marker-popup-table-cell");
-        value.set_inner_html(&row_value);
+        value.set_inner_html(row_value);
 
         row.append_child(&title)?;
         row.append_child(&value)?;
@@ -138,7 +138,7 @@ impl Popup for ShotData {
         info_table.set_class_name("marker-popup-table");
 
         let block_row =
-            self.build_table_row(document, "Block", &self.block.trim_end_matches(','))?;
+            self.build_table_row(document, "Block", self.block.trim_end_matches(','))?;
         info_table.append_child(&block_row)?;
 
         if self.incident_type_description.to_lowercase() == "multiple gunshots" {

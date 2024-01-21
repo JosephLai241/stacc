@@ -46,7 +46,7 @@ impl AbstractableHashMap for CleanedShotData {
 
         let mut sorted_vec: Vec<(String, i32)> = hashmap
             .iter()
-            .map(|(key, value)| (key.clone(), value.clone()))
+            .map(|(key, value)| (key.clone(), *value))
             .collect();
         sorted_vec.sort_by(|a, b| a.1.cmp(&b.1));
         sorted_vec.reverse();
@@ -90,7 +90,7 @@ impl AbstractableHashMap for CleanedViolenceData {
 
         let mut sorted_vec: Vec<(String, i32)> = hashmap
             .iter()
-            .map(|(key, value)| (key.clone(), value.clone()))
+            .map(|(key, value)| (key.clone(), *value))
             .collect();
         sorted_vec.sort_by(|a, b| a.1.cmp(&b.1));
         sorted_vec.reverse();
