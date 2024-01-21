@@ -1,4 +1,5 @@
 //! `stacc` -- A Rust web frontend.
+#![allow(clippy::enum_variant_names)]
 
 use lazy_static::lazy_static;
 use yew::prelude::*;

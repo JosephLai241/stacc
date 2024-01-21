@@ -1,4 +1,5 @@
 //! The API for the `stacc`.
+#![allow(clippy::enum_variant_names)]
 
 use std::env;
 
