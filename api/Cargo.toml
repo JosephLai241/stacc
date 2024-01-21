@@ -2,7 +2,7 @@
 authors = ["Joseph Lai"]
 edition = "2021"
 name = "api"
-version = "1.0.0"
+version = "1.1.0"
 
 [[bin]]
 name = "api"
