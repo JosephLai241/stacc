@@ -551,15 +551,11 @@ fn plot_shotspotter_data(
 
             if earliest_date.is_empty() || date < earliest_date {
                 earliest_date = date.clone();
-            } /* else if date < earliest_date {*/
-            /*earliest_date = date.clone();*/
-            /*}*/
+            }
 
             if latest_date.is_empty() || date > latest_date {
                 latest_date = date.clone();
-            } /*else if date > latest_date {*/
-            /*latest_date = date.clone();*/
-            /*}*/
+            }
 
             if let (Some(longitude), Some(latitude)) = (
                 shot_data.location.coordinates.first(),
@@ -634,15 +630,11 @@ fn plot_violence_data(map: &Map, vhnfs_data: &[Value]) -> Result<CleanedViolence
 
             if earliest_date.is_empty() || date < earliest_date {
                 earliest_date = date.clone();
-            } /* else if date < earliest_date {*/
-            /*earliest_date = date.clone();*/
-            /*}*/
+            }
 
             if latest_date.is_empty() || date > latest_date {
                 latest_date = date.clone();
-            } /* else if date > latest_date {*/
-            /*latest_date = date.clone();*/
-            /*}*/
+            }
 
             if let (Some(longitude), Some(latitude)) = (
                 violence_data.location.coordinates.first(),
