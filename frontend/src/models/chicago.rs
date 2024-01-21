@@ -560,7 +560,7 @@ impl ViolenceData {
             "502R" => "OTHER OFFENSE VEHICLE TITLE/REG OFFENSE".to_string(),
             "502T" => "OTHER OFFENSE TAMPER WITH MOTOR VEHICLE".to_string(),
 
-            _ => "???".to_string(),
+            _ => "UNKNOWN".to_string(),
         }
     }
 }
