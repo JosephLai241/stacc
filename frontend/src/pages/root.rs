@@ -59,6 +59,7 @@ pub fn root() -> Html {
           <ShadesOfRust />
           <div style="margin-bottom: 50px;"></div>
           <h3><a href="/blog">{"blog"}</a></h3>
+          <h3><a href="/violence">{"violence"}</a></h3>
           <h3><a href="/about">{"about"}</a></h3>
         </div>
     }

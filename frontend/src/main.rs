@@ -1,16 +1,21 @@
 //! `stacc` -- A Rust web frontend.
+#![allow(clippy::enum_variant_names)]
 
 use lazy_static::lazy_static;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use pages::{about::About, blog::Blog, not_found::NotFound, post_view::PostView, root::Root};
+use pages::{
+    about::About, blog::Blog, not_found::NotFound, post_view::PostView, root::Root,
+    violence::Violence,
+};
 use router::Route;
 
 mod errors;
 mod models;
 mod pages;
 mod router;
+mod traits;
 mod utils;
 
 lazy_static! {
@@ -50,6 +55,7 @@ fn switch(route: Route) -> Html {
         Route::NotFound => html! { <NotFound /> },
         Route::PostView { post_id } => html! { <PostView post_id={post_id} /> },
         Route::Root => html! { <Root /> },
+        Route::Violence => html! { <Violence /> },
     }
 }
 

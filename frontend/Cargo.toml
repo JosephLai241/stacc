@@ -2,7 +2,7 @@
 authors = ["Joseph Lai"]
 edition = "2021"
 name = "frontend"
-version = "1.0.1"
+version = "1.1.0"
 
 [dependencies]
 chrono = "0.4.24"
@@ -12,14 +12,29 @@ gloo-console = "0.2.3"
 gloo-net = { version = "0.2.6", features = ["http"] }
 gloo-timers = { version = "0.2.6", features = ["futures"] }
 gloo-utils = "0.1.6"
+hex = "0.4.3"
 js-sys = "0.3.63"
 lazy_static = "1.4.0"
+leaflet = "0.4.0"
 pulldown-cmark = "0.9.3"
 serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.111"
+sha2 = "0.10.8"
 thiserror = "1.0.40"
 wasm-bindgen = "0.2.86"
 wasm-bindgen-futures = "0.4.36"
 wasm-cookies = "0.1.0"
-web-sys = { version = "0.3.63", features = ["CssStyleDeclaration", "Document", "HtmlElement", "MutationObserver", "MutationObserverInit", "Node"] }
+web-sys = { version = "0.3.63", features = [
+  "CssStyleDeclaration",
+  "Document",
+  "HtmlElement",
+  "HtmlInputElement",
+  "HtmlTableCellElement",
+  "HtmlTableElement",
+  "HtmlTableRowElement",
+  "MutationObserver",
+  "MutationObserverInit",
+  "Node",
+] }
 yew = { version = "0.20.0", features = ["csr"] }
 yew-router = "0.17.0"

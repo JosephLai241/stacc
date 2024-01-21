@@ -1,4 +1,5 @@
 //! The API for the `stacc`.
+#![allow(clippy::enum_variant_names)]
 
 use std::env;
 
@@ -49,6 +50,7 @@ async fn main() {
                 .app_data(mongo.clone())
                 .service(
                     web::scope("api")
+                        .service(routes::misc::chiraq)
                         .service(routes::misc::get_background_gif)
                         .service(routes::misc::story)
                         .service(

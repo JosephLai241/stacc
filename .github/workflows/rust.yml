@@ -24,6 +24,9 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
 
+    env:
+      LEAFLET_ACCESS_TOKEN: ${{ secrets.LEAFLET_ACCESS_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 

@@ -13,6 +13,10 @@ use crate::models::data::Response;
 /// Contains all error variants for errors that may be raised by Actix Web endpoints.
 #[derive(Debug, Display, derive_more::Error)]
 pub enum StaccResponseError {
+    /// Something fucked up when pinging the Chicago map APIs.
+    #[display(fmt = "Chicago API error: {error}")]
+    ChicagoAPIError { error: String },
+
     /// A generic error variant for MongoDB.
     #[display(fmt = "MongoDB error: {error}")]
     MongoDBError { error: String },
@@ -34,6 +38,9 @@ impl ResponseError for StaccResponseError {
 
     fn status_code(&self) -> StatusCode {
         match *self {
+            StaccResponseError::ChicagoAPIError { .. } => {
+                StatusCode::from_u16(500).unwrap_or(StatusCode::BAD_REQUEST)
+            }
             StaccResponseError::MongoDBError { .. } => {
                 StatusCode::from_u16(500).unwrap_or(StatusCode::BAD_REQUEST)
             }
@@ -57,4 +64,8 @@ pub enum StaccError {
     /// Something fucked up while making a request with `reqwest`.
     #[error("Reqwest error: {0}")]
     Reqwest(#[from] reqwest::Error),
+
+    /// Something fucked up with `serde_json`.
+    #[error("Serde JSON error: {0}")]
+    SerdeJSONError(#[from] serde_json::Error),
 }

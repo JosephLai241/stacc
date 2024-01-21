@@ -21,4 +21,6 @@ pub enum Route {
     /// Root page (landing page).
     #[at("/")]
     Root,
+    #[at("/violence")]
+    Violence,
 }

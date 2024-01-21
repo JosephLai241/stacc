@@ -18,7 +18,7 @@ use crate::{
     errors::StaccResponseError,
     middleware,
     models::data::{BackgroundGIF, Story},
-    utils::{environment::EnvironmentVariables, mongo::Mongo},
+    utils::{chicago::get_vhnfs_shotspotter_data, environment::EnvironmentVariables, mongo::Mongo},
 };
 
 lazy_static! {
@@ -28,6 +28,11 @@ lazy_static! {
     static ref FALLBACK_GIF: &'static str = "https://imgur.com/FgJDNsx.gif";
     /// The default fallback story if selecting a random story from MongoDB fails.
     static ref FALLBACK_STORY: &'static str = "If you don’t like the road you’re walking, pave another one. Except for this one.";
+
+    /// The API endpoint for the ShotSpotter Alerts data.
+    static ref SHOTSPOTTER_ENDPOINT: &'static str = "https://data.cityofchicago.org/resource/3h7q-7mdb.json";
+    /// The API endpoint for the Victims of Homicides and Non-Fatal Shootings data.
+    static ref VHNFS_ENDPOINT: &'static str = "https://data.cityofchicago.org/resource/gumc-mgzr.json";
 }
 
 /// Create a cookie that stores the background GIF link. Returns `Some(Cookie)` if able to retrieve
@@ -96,6 +101,24 @@ pub async fn get_background_gif(
         Some(cookie) => Ok(HttpResponse::Ok().cookie(cookie).json(background_gif)),
         None => Ok(HttpResponse::Ok().json(background_gif)),
     }
+}
+
+/// Get the data that will be plotted on the Chicago map on the `violence` page.
+#[get("/chiraq")]
+pub async fn chiraq(
+    mongo: Data<Mongo>,
+    request: HttpRequest,
+) -> Result<HttpResponse, StaccResponseError> {
+    if let Err(error) = middleware::log_visitor_data(&mongo, &request).await {
+        error!("{}", error);
+    }
+
+    get_vhnfs_shotspotter_data()
+        .await
+        .map(|chicago_map_data| HttpResponse::Ok().json(chicago_map_data))
+        .map_err(|error| StaccResponseError::ChicagoAPIError {
+            error: error.to_string(),
+        })
 }
 
 /// Get a 404 page story by choosing a random story stored in the stories collection.

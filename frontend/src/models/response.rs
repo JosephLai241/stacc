@@ -3,7 +3,7 @@
 use serde::Deserialize;
 
 /// Holds the standard message + status code response sent from the API.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq)]
 pub struct Response {
     /// The message associated with this response.
     pub message: String,
