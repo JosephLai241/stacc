@@ -3,8 +3,14 @@
 use gloo_console::error;
 use js_sys::Function;
 use pulldown_cmark::{html, Options, Parser};
-use web_sys::{MutationObserver, MutationObserverInit};
+use wasm_bindgen::JsCast;
+use web_sys::{
+    HtmlTableCellElement, HtmlTableElement, HtmlTableRowElement, MutationObserver,
+    MutationObserverInit,
+};
 use yew::prelude::*;
+
+use crate::errors::StaccError;
 
 /// Convert the post's body from Markdown to HTML.
 fn create_post_body(post_body: &str) -> String {
@@ -119,4 +125,65 @@ pub fn loading() -> Html {
           </h2>
         </div>
     }
+}
+
+/// Create a table from the data in a given `Vec<(String, i32)>`.
+pub fn create_table_from_data(
+    table_header: (&str, &str),
+    data: &Vec<(String, i32)>,
+) -> Result<HtmlTableElement, StaccError> {
+    let document = gloo_utils::document();
+
+    let table = document
+        .create_element("table")?
+        .dyn_into::<HtmlTableElement>()?;
+    table.set_class_name("data-table");
+
+    let header_row = document
+        .create_element("tr")?
+        .dyn_into::<HtmlTableRowElement>()?;
+    header_row.set_class_name("data-table-header-row");
+
+    let key_header = document
+        .create_element("th")?
+        .dyn_into::<HtmlTableCellElement>()?;
+    key_header.set_inner_text(&table_header.0);
+    key_header.set_class_name("data-table-header-cell");
+
+    let value_header = document
+        .create_element("th")?
+        .dyn_into::<HtmlTableCellElement>()?;
+    value_header.set_inner_text(&table_header.1);
+    value_header.set_class_name("data-table-header-cell");
+
+    header_row.append_child(&key_header);
+    header_row.append_child(&value_header);
+
+    table.append_child(&header_row);
+
+    for key_value in data.into_iter() {
+        let row = document
+            .create_element("tr")?
+            .dyn_into::<HtmlTableRowElement>()?;
+        row.set_class_name("data-table-row");
+
+        let key = document
+            .create_element("td")?
+            .dyn_into::<HtmlTableCellElement>()?;
+        key.set_inner_text(&key_value.0);
+        key.set_class_name("data-table-left-cell");
+
+        let value = document
+            .create_element("td")?
+            .dyn_into::<HtmlTableCellElement>()?;
+        value.set_inner_text(&key_value.1.to_string());
+        value.set_class_name("data-table-right-cell-left-border");
+
+        row.append_child(&key);
+        row.append_child(&value);
+
+        table.append_child(&row);
+    }
+
+    Ok(table)
 }
