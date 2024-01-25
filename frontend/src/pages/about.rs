@@ -41,7 +41,9 @@ and a place to blog about all things computer science."#;
               <a href="https://yew.rs"><code>{ "Yew" }</code></a>
               { " to implement the frontend and " }
               <a href="https://actix.rs"><code>{ "Actix Web" }</code></a>
-              { " to implement the API." }
+              { " to implement the API. The " }
+              <a href="https://github.com/JosephLai241/stacc">{ "source code" }</a>
+              { " is available on my GitHub." }
             </p>
             <div class="image-container">
               <a class="social-icon" href="https://github.com/JosephLai241">
