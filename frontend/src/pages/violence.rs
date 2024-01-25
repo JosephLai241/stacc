@@ -440,6 +440,10 @@ fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode),
                 ("victim race", "occurrences"),
                 &cleaned_violence_data.to_vec("sorted_victim_races")?,
             )?;
+            let victim_ages_table = create_table_from_data(
+                ("victim age range", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_ages")?,
+            )?;
             let victim_sexes_table = create_table_from_data(
                 ("victim sex", "occurrences"),
                 &cleaned_violence_data.to_vec("sorted_victim_sexes")?,
@@ -457,6 +461,7 @@ fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode),
             let _ = tables.append_child(&incident_types_table);
             let _ = tables.append_child(&location_description_table);
             let _ = tables.append_child(&victim_races_table);
+            let _ = tables.append_child(&victim_ages_table);
             let _ = tables.append_child(&victim_sexes_table);
             let _ = tables.append_child(&gun_injury_table);
             let _ = tables.append_child(&community_areas_table);
