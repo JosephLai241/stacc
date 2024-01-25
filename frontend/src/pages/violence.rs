@@ -74,7 +74,6 @@ lazy_static! {
 /// The Chicago ShotSpotter map page.
 #[function_component(Violence)]
 pub fn violence() -> Html {
-    background::set_background(true);
     gloo_utils::document().set_title("jl | violence");
 
     let is_loading = use_state(|| true);
@@ -85,6 +84,8 @@ pub fn violence() -> Html {
 
         use_effect_with_deps(
             move |_| {
+                background::set_background(true);
+
                 wasm_bindgen_futures::spawn_local(async move {
                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
                         "Visualizing violence in Chicago".to_string(),
