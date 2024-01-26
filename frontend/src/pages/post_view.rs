@@ -24,8 +24,6 @@ pub struct PostViewProps {
 /// The post view page.
 #[function_component(PostView)]
 pub fn post_view(props: &PostViewProps) -> Html {
-    background::set_background(true);
-
     let post_id = props.post_id.clone();
 
     let is_loading = use_state(|| true);
@@ -36,6 +34,8 @@ pub fn post_view(props: &PostViewProps) -> Html {
 
         use_effect_with_deps(
             move |_| {
+                background::set_background(true);
+
                 open_graph::set_open_graph_tag(OpenGraphTag::PageType(PageType::Article))
                     .unwrap_or_else(|error| error!(error.to_string()));
                 open_graph::set_open_graph_tag(OpenGraphTag::Url(format!(

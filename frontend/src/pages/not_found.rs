@@ -17,7 +17,6 @@ use crate::{
 /// The 404 Not Found page.
 #[function_component(NotFound)]
 pub fn not_found() -> Html {
-    background::set_background(true);
     gloo_utils::document().set_title("jl | 404");
 
     let is_loading = use_state(|| true);
@@ -28,6 +27,8 @@ pub fn not_found() -> Html {
 
         use_effect_with_deps(
             move |_| {
+                background::set_background(true);
+
                 wasm_bindgen_futures::spawn_local(async move {
                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
                         "go the fuck home".to_string(),

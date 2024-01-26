@@ -18,7 +18,6 @@ use crate::FAVICON_GIF;
 /// The blog page.
 #[function_component(Blog)]
 pub fn blog() -> Html {
-    background::set_background(true);
     gloo_utils::document().set_title("jl | blog");
 
     let is_loading = use_state(|| true);
@@ -29,6 +28,8 @@ pub fn blog() -> Html {
 
         use_effect_with_deps(
             move |_| {
+                background::set_background(true);
+
                 wasm_bindgen_futures::spawn_local(async move {
                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
                         "my blog".to_string(),

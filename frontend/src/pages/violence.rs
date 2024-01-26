@@ -74,7 +74,6 @@ lazy_static! {
 /// The Chicago ShotSpotter map page.
 #[function_component(Violence)]
 pub fn violence() -> Html {
-    background::set_background(true);
     gloo_utils::document().set_title("jl | violence");
 
     let is_loading = use_state(|| true);
@@ -85,6 +84,8 @@ pub fn violence() -> Html {
 
         use_effect_with_deps(
             move |_| {
+                background::set_background(true);
+
                 wasm_bindgen_futures::spawn_local(async move {
                     open_graph::set_open_graph_tag(OpenGraphTag::Description(
                         "Visualizing violence in Chicago".to_string(),
@@ -439,6 +440,10 @@ fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode),
                 ("victim race", "occurrences"),
                 &cleaned_violence_data.to_vec("sorted_victim_races")?,
             )?;
+            let victim_ages_table = create_table_from_data(
+                ("victim age range", "occurrences"),
+                &cleaned_violence_data.to_vec("sorted_ages")?,
+            )?;
             let victim_sexes_table = create_table_from_data(
                 ("victim sex", "occurrences"),
                 &cleaned_violence_data.to_vec("sorted_victim_sexes")?,
@@ -456,6 +461,7 @@ fn render_map(chicago_map_data: ChicagoMapData) -> Result<(VNode, VNode, VNode),
             let _ = tables.append_child(&incident_types_table);
             let _ = tables.append_child(&location_description_table);
             let _ = tables.append_child(&victim_races_table);
+            let _ = tables.append_child(&victim_ages_table);
             let _ = tables.append_child(&victim_sexes_table);
             let _ = tables.append_child(&gun_injury_table);
             let _ = tables.append_child(&community_areas_table);
