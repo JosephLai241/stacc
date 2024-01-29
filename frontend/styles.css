@@ -489,6 +489,7 @@ code {
 /* Style for the data table */
 .data-table {
   border: solid 1px #7d310a;
+  border-radius: 5px;
   display: block;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -554,6 +555,7 @@ code {
 /* Style for the left box/label. */
 .date-range-label-box {
   background-color: #7d310a;
+  border-radius: 5px 0px 0px 5px;
   color: white;
   flex: 1;
   padding: 10px;
@@ -564,6 +566,7 @@ code {
 .date-range-value-box {
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
   border: 1px solid #7d310a;
+  border-radius: 0px 5px 5px 0px;
   color: #7d310a;
   flex: 2;
   padding: 10px;
@@ -657,6 +660,7 @@ code {
 /* Set the height of the Leaflet map (otherwise it does not show up). */
 .map {
   border: 1px solid #7d310a;
+  border-radius: 5px;
   height: 90vh;
 }
 
@@ -773,6 +777,7 @@ code {
 .tables-container {
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
   border: 1px solid #7d310a;
+  border-radius: 5px;
   margin-bottom: 1em;
   padding: 10px;
 }
@@ -782,6 +787,7 @@ code {
 .tables-container-header-container {
   align-items: center;
   background: #7d310a;
+  border-radius: 5px;
   color: white;
   display: flex;
   justify-content: center;
@@ -792,62 +798,59 @@ code {
 /* Style for the extra T H I C C line divider in the tables container. */
 .tables-container-thicc-separator {
   border-top: 10px solid #7d310a;
+  border-radius: 5px;
   margin-bottom: 40px;
   margin-top: 40px;
 }
 
 /* Sexy style for the site's title. */
 .title-text {
-  animation:
-    to-white-text 1.5s linear forwards,
-    textShadow 1.6s infinite;
+  animation: to-blue-text 0.25s linear forwards;
   color: #b0b0b0;
   display: inline-block;
   padding-left: 10px;
+  text-shadow:
+    -3px 3px 0px #004799,
+    -6px 6px 0px #002d61,
+    -9px 9px 0px #001f42;
   transition: all 0.5s;
   will-change: transform;
 }
 
 /* Adding a hover animation of sorts for the site's title art. */
 .title-text:hover {
-  animation:
-    to-black-text 0.5s linear forwards,
-    textShadow 2s infinite;
-  text-shadow:
-    -1px 1px 0px #000000,
-    -2px 2px 0px #000000,
-    -3px 3px 0px #000000,
-    -4px 4px 0px #000000,
-    -5px 5px 0px #000000,
-    -6px 6px 0px #000000,
-    -7px 7px 0px #000000,
-    -8px 8px 0px #000000,
-    -9px 9px 0px #000000;
+  animation: to-orange-text 0.25s linear forwards;
 }
 
-/* The transition from white to blue to black text. */
-@keyframes to-black-text {
+/* The transition from blue to orange text. */
+@keyframes to-orange-text {
   0% {
-    color: #b0b0b0;
-  }
-  50% {
-    color: #002d61;
+    text-shadow:
+      -3px 3px 0px #004799,
+      -6px 6px 0px #002d61,
+      -9px 9px 0px #001f42;
   }
   100% {
-    color: #000000;
+    text-shadow:
+      -3px 3px 0px #b7410e,
+      -6px 6px 0px #6e2708,
+      -9px 9px 0px #471905;
   }
 }
 
-/* The transition from black to blue to white text. */
-@keyframes to-white-text {
+/* The transition from orange to blue text. */
+@keyframes to-blue-text {
   0% {
-    color: #000000;
-  }
-  50% {
-    color: #002d61;
+    text-shadow:
+      -3px 3px 0px #b7410e,
+      -6px 6px 0px #6e2708,
+      -9px 9px 0px #471905;
   }
   100% {
-    color: #b0b0b0;
+    text-shadow:
+      -3px 3px 0px #004799,
+      -6px 6px 0px #002d61,
+      -9px 9px 0px #001f42;
   }
 }
 
