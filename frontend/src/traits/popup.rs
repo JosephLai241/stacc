@@ -73,13 +73,13 @@ pub trait Popup {
         let title = document
             .create_element("td")?
             .dyn_into::<HtmlTableCellElement>()?;
-        title.set_class_name("marker-popup-table-cell");
+        title.set_class_name("marker-popup-table-cell-title");
         title.set_inner_html(&format!("<b>{row_title}</b>"));
 
         let value = document
             .create_element("td")?
             .dyn_into::<HtmlTableCellElement>()?;
-        value.set_class_name("marker-popup-table-cell");
+        value.set_class_name("marker-popup-table-cell-value");
         value.set_inner_html(row_value);
 
         row.append_child(&title)?;

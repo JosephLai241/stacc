@@ -709,10 +709,20 @@ code {
   width: 100%;
 }
 
-/* The styling for the data table's cells in the popup. */
-.marker-popup-table-cell {
+/* The styling for the data table's title cells in the popup. */
+.marker-popup-table-cell-title {
+  background: #7d310a;
   border-collapse: collapse;
-  border-color: gray;
+  border-color: #7d310a;
+  border-style: solid;
+  border-width: 1px;
+  padding: 4px;
+}
+
+/* The styling for the data table's value cells in the popup. */
+.marker-popup-table-cell-value {
+  border-collapse: collapse;
+  border-color: #7d310a;
   border-style: solid;
   border-width: 1px;
   padding: 4px;
