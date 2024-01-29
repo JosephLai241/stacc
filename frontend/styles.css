@@ -494,7 +494,7 @@ code {
   margin-bottom: 10px;
   margin-top: 10px;
   max-height: calc(30px * 10);
-  overflow-y: auto;
+  overflow-y: scroll;
   width: 100%;
 }
 
