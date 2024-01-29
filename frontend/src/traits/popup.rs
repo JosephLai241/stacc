@@ -69,6 +69,7 @@ pub trait Popup {
         let row = document
             .create_element("tr")?
             .dyn_into::<HtmlTableRowElement>()?;
+        row.set_class_name("marker-popup-table-row");
 
         let title = document
             .create_element("td")?

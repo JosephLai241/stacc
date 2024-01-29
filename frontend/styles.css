@@ -705,8 +705,15 @@ code {
 
 /* The styling for the data table in the popup. */
 .marker-popup-table {
+  display: flex;
+  flex-direction: column;
   margin-top: 10px;
   width: 100%;
+}
+
+/* The styling for each row in the marker popup table. */
+.marker-popup-table-row {
+  display: flex;
 }
 
 /* The styling for the data table's title cells in the popup. */
@@ -716,6 +723,7 @@ code {
   border-color: #7d310a;
   border-style: solid;
   border-width: 1px;
+  flex: 1;
   padding: 4px;
 }
 
@@ -725,6 +733,7 @@ code {
   border-color: #7d310a;
   border-style: solid;
   border-width: 1px;
+  flex: 1;
   padding: 4px;
 }
 
